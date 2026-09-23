@@ -3,29 +3,648 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3A Technology - Công ty TNHH Công Nghệ 3A (3a.vn)</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>3A Technology & Solutions - Camera, Mạng & Thiết Bị Smarthome</title>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800">
-    <!-- Header Page Structure -->
-    <header class="bg-slate-900 text-white p-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">3A TECHNOLOGY (3a.vn)</h1>
-            <nav class="space-x-4">
-                <a href="#home" class="hover:text-blue-400">Trang Chủ</a>
-                <a href="#products" class="hover:text-blue-400">Sản Phẩm</a>
-                <a href="#warranty" class="hover:text-blue-400">Bảo Hành</a>
-            </nav>
+<body>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="container topbar-content">
+            <div class="topbar-left">
+                <span><i class="fa-solid fa-phone"></i> Hotline: <strong>1900 3A3A (1900 3232)</strong></span>
+                <span><i class="fa-solid fa-envelope"></i> Email: <strong>info@3atech.vn</strong></span>
+                <span><i class="fa-solid fa-location-dot"></i> TP. Hồ Chí Minh & Hà Nội</span>
+            </div>
+            <div class="topbar-right">
+                <div class="mode-switch">
+                    <span>Chế độ:</span>
+                    <button id="mode-b2c-btn" class="mode-btn active" onclick="switchCustomerMode('b2c')"><i class="fa-solid fa-user"></i> B2C Cá nhân</button>
+                    <button id="mode-b2b-btn" class="mode-btn" onclick="switchCustomerMode('b2b')"><i class="fa-solid fa-building"></i> B2B Doanh nghiệp</button>
+                </div>
+                <button class="topbar-link" onclick="navigateTo('page-admin')"><i class="fa-solid fa-user-gear"></i> Quản trị / API</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="main-header">
+        <div class="container header-wrapper">
+            <div class="logo-area" onclick="navigateTo('page-home')">
+                <div class="logo-icon">3A</div>
+                <div class="logo-text">
+                    <span class="brand-name">3A TECH</span>
+                    <span class="brand-tagline">Technology & Solutions</span>
+                </div>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="global-search" placeholder="Nhập tên sản phẩm, camera 4K, Wi-Fi 6, Switch PoE..." onkeyup="handleQuickSearch(event)">
+                <button class="btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <div class="search-results-dropdown" id="search-results-dropdown"></div>
+            </div>
+
+            <div class="header-actions">
+                <button class="action-btn" onclick="navigateTo('page-warranty')">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Tra bảo hành</span>
+                </button>
+                <button class="action-btn" onclick="openQuoteModal()">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Báo giá B2B</span>
+                    <span class="badge" id="quote-count-badge">0</span>
+                </button>
+                <button class="action-btn primary" onclick="openCartModal()">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Giỏ hàng</span>
+                    <span class="badge badge-accent" id="cart-count-badge">0</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <main id="app-content" class="p-6 max-w-7xl mx-auto">
-        <!-- Content Modules Rendered Dynamically -->
+    <!-- NAVIGATION MENU -->
+    <nav class="main-nav">
+        <div class="container nav-wrapper">
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="page-home" onclick="navigateTo('page-home')"><i class="fa-solid fa-house"></i> Trang Chủ</li>
+                <li class="nav-item" data-page="page-products" onclick="navigateTo('page-products')"><i class="fa-solid fa-boxes-stacked"></i> Sản Phẩm & Bộ Lọc</li>
+                <li class="nav-item" data-page="page-solutions" onclick="navigateTo('page-solutions')"><i class="fa-solid fa-diagram-project"></i> Giải Pháp & Dự Toán B2B</li>
+                <li class="nav-item" data-page="page-warranty" onclick="navigateTo('page-warranty')"><i class="fa-solid fa-screwdriver-wrench"></i> Tra Cứu Bảo Hành</li>
+                <li class="nav-item" data-page="page-news" onclick="navigateTo('page-news')"><i class="fa-solid fa-newspaper"></i> Tin Tức & Kỹ Thuật</li>
+                <li class="nav-item" data-page="page-admin" onclick="navigateTo('page-admin')"><i class="fa-solid fa-code"></i> Quản Trị & REST API</li>
+            </ul>
+            <div class="nav-extra">
+                <span class="b2b-badge" id="current-mode-indicator"><i class="fa-solid fa-check-circle"></i> Đang chọn: B2C Khách Lẻ</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINERS -->
+    <main class="main-content container">
+
+        <!-- 1. PAGE: HOME -->
+        <section id="page-home" class="page-section active">
+            <!-- HERO BANNER -->
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <span class="tag">GIẢI PHÁP TỔNG THỂ ELV & ICT</span>
+                    <h1>Hệ Thống Camera & Mạng Doanh Nghiệp Chuẩn 3A</h1>
+                    <p>Cung cấp giải pháp An Ninh - Mạng Wi-Fi Diện Rộng - Smarthome & Tổng Đài Số cho Doanh Nghiệp & Gia Đình.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="navigateTo('page-solutions')"><i class="fa-solid fa-calculator"></i> Dự toán chi phí ngay</button>
+                        <button class="btn btn-outline" onclick="navigateTo('page-products')"><i class="fa-solid fa-store"></i> Khám phá sản phẩm</button>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <div class="quick-b2b-box">
+                        <h3><i class="fa-solid fa-file-pdf"></i> Tải Báo Giá Nhanh B2B</h3>
+                        <p>Xuất file báo giá VAT chính thức chỉ trong 30 giây cho duyệt ngân sách.</p>
+                        <ul class="check-list">
+                            <li><i class="fa-solid fa-check"></i> Chiết khấu dự án tới 25%</li>
+                            <li><i class="fa-solid fa-check"></i> Đầy đủ CO, CQ, Datasheet PDF</li>
+                            <li><i class="fa-solid fa-check"></i> Hỗ trợ khảo sát tận nơi miễn phí</li>
+                        </ul>
+                        <button class="btn btn-accent btn-full" onclick="navigateTo('page-products')">Xem Danh Mục & Lấy Báo Giá</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK CATEGORIES -->
+            <div class="section-title">
+                <h2>Danh Mục Sản Phẩm Cốt Lõi</h2>
+                <p>Thiết bị công nghệ chính hãng bảo hành tới 36 tháng</p>
+            </div>
+            <div class="grid grid-4 categories-grid">
+                <div class="cat-card" onclick="filterCategoryAndNavigate('camera')">
+                    <i class="fa-solid fa-video cat-icon"></i>
+                    <h3>Camera An Ninh</h3>
+                    <p>Camera IP 4K, AI nhận diện, PTZ công nghiệp</p>
+                </div>
+                <div class="cat-card" onclick="filterCategoryAndNavigate('network')">
+                    <i class="fa-solid fa-wifi cat-icon"></i>
+                    <h3>Thiết Bị Mạng</h3>
+                    <p>Router Wi-Fi 6, PoE Switch, Mạng Mesh tòa nhà</p>
+                </div>
+                <div class="cat-card" onclick="filterCategoryAndNavigate('smarthome')">
+                    <i class="fa-solid fa-house-signal cat-icon"></i>
+                    <h3>Smart Home & Khóa</h3>
+                    <p>Khóa vân tay, cảm biến thông minh, Gateway</p>
+                </div>
+                <div class="cat-card" onclick="filterCategoryAndNavigate('pbx')">
+                    <i class="fa-solid fa-headset cat-icon"></i>
+                    <h3>Tổng Đài & Server</h3>
+                    <p>Tổng đài IP, Server lưu trữ NAS, Tủ Rack</p>
+                </div>
+            </div>
+
+            <!-- FEATURED PRODUCTS -->
+            <div class="section-header">
+                <div>
+                    <h2>Sản Phẩm Nổi Bật</h2>
+                    <p id="home-products-subtitle">Giá dành cho khách hàng B2C</p>
+                </div>
+                <button class="btn-link" onclick="navigateTo('page-products')">Xem tất cả sản phẩm <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <div class="grid grid-4" id="home-featured-products"></div>
+
+            <!-- CORE SOLUTIONS -->
+            <div class="section-title" style="margin-top: 50px;">
+                <h2>Dịch Vụ & Giải Pháp Thi Công Trọn Gói</h2>
+                <p>Đáp ứng từ căn hộ đến chuỗi cửa hàng & nhà xưởng quy mô lớn</p>
+            </div>
+            <div class="grid grid-3">
+                <div class="solution-card">
+                    <div class="sol-img"><i class="fa-solid fa-network-wired"></i></div>
+                    <h3>Thi Công Mạng LAN / Wi-Fi Doanh Nghiệp</h3>
+                    <p>Hệ thống mạng chịu tải cao cho 100-1000 M&E thiết bị kết nối đồng thời, roaming mượt mà.</p>
+                    <button class="btn btn-sm btn-outline" onclick="navigateTo('page-solutions')">Xem chi tiết & Dự toán</button>
+                </div>
+                <div class="solution-card">
+                    <div class="sol-img"><i class="fa-solid fa-shield-cat"></i></div>
+                    <h3>Hệ Thống Camera AI Giám Sát Tăng Cường</h3>
+                    <p>Cảnh báo đột nhập thời gian thực, lưu trữ Cloud/NVR kép, tích hợp AI đếm lượt khách.</p>
+                    <button class="btn btn-sm btn-outline" onclick="navigateTo('page-solutions')">Xem chi tiết & Dự toán</button>
+                </div>
+                <div class="solution-card">
+                    <div class="sol-img"><i class="fa-solid fa-building-user"></i></div>
+                    <h3>Tổng Đài IP & Kiểm Soát Vào Ra Access Control</h3>
+                    <p>Quản lý chấm công khuôn mặt, thẻ từ, tổng đài ghi âm cuộc gọi CSKH cho doanh nghiệp.</p>
+                    <button class="btn btn-sm btn-outline" onclick="navigateTo('page-solutions')">Xem chi tiết & Dự toán</button>
+                </div>
+            </div>
+
+            <!-- PROJECTS SHOWCASE -->
+            <div class="projects-section">
+                <h2>Dự Án Tiêu Biểu Đã Thi Công</h2>
+                <div class="grid grid-3" style="margin-top:20px;">
+                    <div class="project-box">
+                        <div class="project-tag">Chuỗi Showroom</div>
+                        <h4>Hệ thống 15 Showroom Auto365</h4>
+                        <p>Lắp đặt 120 Camera 4K AI, Mạng Wi-Fi Mesh Ruijie, Tổng đài chăm sóc khách hàng.</p>
+                    </div>
+                    <div class="project-box">
+                        <div class="project-tag">Tòa nhà văn phòng</div>
+                        <h4>Văn Phòng SunGroup Tân Bình</h4>
+                        <p>Hệ thống Mạng LAN 300 Node, Access Control vân tay và Camera hành lang kép.</p>
+                    </div>
+                    <div class="project-box">
+                        <div class="project-tag">Nhà xưởng B2B</div>
+                        <h4>Khu Công Nghiệp VSIP II - Bình Dương</h4>
+                        <p>Giải pháp Camera PTZ Zoom 30x diện rộng, Mạng Cáp quang nội bộ 10Gbps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PAGE: PRODUCTS & FILTER -->
+        <section id="page-products" class="page-section">
+            <div class="products-layout">
+                <!-- SIDEBAR FILTER -->
+                <aside class="filter-sidebar">
+                    <div class="filter-header">
+                        <h3><i class="fa-solid fa-filter"></i> Bộ Lọc Kỹ Thuật</h3>
+                        <button class="btn-reset" onclick="resetFilters()">Xóa lọc</button>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Danh Mục Chi Tiết</label>
+                        <select id="filter-category" onchange="applyFilters()">
+                            <option value="all">Tất cả danh mục</option>
+                            <option value="camera">Camera An Ninh</option>
+                            <option value="network">Thiết Bị Mạng Wi-Fi/Switch</option>
+                            <option value="smarthome">Smart Home & Khóa</option>
+                            <option value="pbx">Tổng Đài & Server</option>
+                        </select>
+                    </div>
+
+                    <!-- Resolution Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Độ Phân Giải (Camera)</label>
+                        <div class="checkbox-list">
+                            <label><input type="checkbox" value="2MP" class="filter-res" onchange="applyFilters()"> 2MP Full HD 1080P</label>
+                            <label><input type="checkbox" value="4MP" class="filter-res" onchange="applyFilters()"> 4MP Super HD</label>
+                            <label><input type="checkbox" value="8MP" class="filter-res" onchange="applyFilters()"> 8MP Ultra HD 4K</label>
+                        </div>
+                    </div>
+
+                    <!-- Ports / Bandwidth Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Cổng Kết Nối / Băng Thông</label>
+                        <div class="checkbox-list">
+                            <label><input type="checkbox" value="PoE" class="filter-spec" onchange="applyFilters()"> Cấp nguồn PoE</label>
+                            <label><input type="checkbox" value="Gigabit" class="filter-spec" onchange="applyFilters()"> Cổng Gigabit 1000Mbps</label>
+                            <label><input type="checkbox" value="WiFi6" class="filter-spec" onchange="applyFilters()"> Chuẩn Wi-Fi 6 AX</label>
+                        </div>
+                    </div>
+
+                    <!-- Brand Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Thương Hiệu</label>
+                        <select id="filter-brand" onchange="applyFilters()">
+                            <option value="all">Tất cả thương hiệu</option>
+                            <option value="Hikvision">Hikvision</option>
+                            <option value="Dahua">Dahua</option>
+                            <option value="Ruijie">Ruijie / Reyee</option>
+                            <option value="TP-Link">TP-Link / Omada</option>
+                            <option value="3A-Smart">3A Smart Solution</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="filter-group">
+                        <label class="filter-label">Mức Giá Tối Đa: <strong id="price-limit-text">20,000,000 VNĐ</strong></label>
+                        <input type="range" id="filter-price" min="500000" max="20000000" step="500000" value="20000000" oninput="updatePriceLabel(this.value)" onchange="applyFilters()">
+                    </div>
+                </aside>
+
+                <!-- PRODUCTS CONTAINER -->
+                <div class="products-main">
+                    <div class="products-bar">
+                        <div>
+                            <h2>Danh Sách Thiết Bị Công Nghệ</h2>
+                            <p id="product-count-text">Hiển thị 8 sản phẩm</p>
+                        </div>
+                        <div class="sort-box">
+                            <span>Sắp xếp:</span>
+                            <select id="sort-select" onchange="applyFilters()">
+                                <option value="default">Mặc định</option>
+                                <option value="price-asc">Giá tăng dần</option>
+                                <option value="price-desc">Giá giảm dần</option>
+                                <option value="name">Tên A-Z</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-3" id="products-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PAGE: SOLUTIONS & COST ESTIMATOR -->
+        <section id="page-solutions" class="page-section">
+            <div class="section-title">
+                <h2>Công Cụ Dự Toán Chi Phí Lắp Đặt B2B / B2C</h2>
+                <p>Tự thiết lập quy mô công trình và nhận ước tính vật tư + thi công trọn gói ngay lập tức</p>
+            </div>
+
+            <div class="estimator-wrapper">
+                <div class="estimator-form">
+                    <h3>1. Cấu hình thông số công trình</h3>
+                    
+                    <div class="form-group">
+                        <label>Diện tích mặt bằng (m²): <strong id="area-val">120 m²</strong></label>
+                        <input type="range" id="estimator-area" min="30" max="1000" value="120" step="10" oninput="calculateEstimate()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số lượng Camera IP An Ninh cần dùng:</label>
+                        <div class="counter-input">
+                            <button onclick="changeCounter('cam', -1)">-</button>
+                            <span id="counter-cam">4</span>
+                            <button onclick="changeCounter('cam', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số điểm Wi-Fi Access Point chuyên dụng:</label>
+                        <div class="counter-input">
+                            <button onclick="changeCounter('wifi', -1)">-</button>
+                            <span id="counter-wifi">2</span>
+                            <button onclick="changeCounter('wifi', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số lượng Khóa Vân Tay / Access Control:</label>
+                        <div class="counter-input">
+                            <button onclick="changeCounter('lock', -1)">-</button>
+                            <span id="counter-lock">1</span>
+                            <button onclick="changeCounter('lock', 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tùy chọn gói bảo trì & Thi công:</label>
+                        <select id="estimator-package" onchange="calculateEstimate()">
+                            <option value="standard">Tiêu chuẩn (Bảo hành 24t tại trung tâm)</option>
+                            <option value="vip">Gói B2B Chuyên Nghiệp (Xử lý sự cố tận nơi trong 2h + Backup thiết bị)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="estimator-summary">
+                    <h3>2. Bảng Ước Tính Vật Tư & Báo Giá</h3>
+                    <div id="estimate-breakdown" class="breakdown-list">
+                        <!-- Dynamic calculated items -->
+                    </div>
+                    <div class="estimate-total-box">
+                        <span>Tổng chi phí dự toán (Tạm tính):</span>
+                        <h2 id="estimate-total-price">0 VNĐ</h2>
+                        <small>* Đã bao gồm vật tư phụ, dây cáp và nhân công thi công</small>
+                    </div>
+
+                    <div class="estimator-actions">
+                        <button class="btn btn-accent btn-full" onclick="addEstimateToQuote()"><i class="fa-solid fa-file-pdf"></i> Tải báo giá cấu hình này (PDF)</button>
+                        <button class="btn btn-outline btn-full" style="margin-top:10px;" onclick="requestSurveyCall()"><i class="fa-solid fa-headset"></i> Đăng ký Kỹ thuật viên đến khảo sát tận nơi</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PAGE: WARRANTY TRACKER -->
+        <section id="page-warranty" class="page-section">
+            <div class="section-title">
+                <h2>Tra Cứu Bảo Hành & Tiến Độ Sửa Chữa</h2>
+                <p>Nhập số Seri (S/N), mã IMEI hoặc Số điện thoại mua hàng để kiểm tra hạn bảo hành & tình trạng kỹ thuật</p>
+            </div>
+
+            <div class="warranty-search-card">
+                <div class="search-input-group">
+                    <input type="text" id="warranty-input" placeholder="Nhập IMEI / Serial (Ví dụ: 3A-889911 hoặc 3A-CAM-99) hoặc SĐT...">
+                    <button class="btn btn-primary" onclick="searchWarranty()"><i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Ngay</button>
+                </div>
+                <div class="sample-imei">
+                    <span>Mã thử nghiệm:</span>
+                    <button onclick="setWarrantySearch('3A-889911')">3A-889911 (Camera 4K)</button>
+                    <button onclick="setWarrantySearch('3A-CAM-99')">3A-CAM-99 (Đang sửa chữa)</button>
+                </div>
+            </div>
+
+            <div id="warranty-result-container" class="warranty-results" style="display: none;">
+                <!-- Result dynamically rendered here -->
+            </div>
+        </section>
+
+        <!-- 5. PAGE: NEWS & TECH GUIDES -->
+        <section id="page-news" class="page-section">
+            <div class="section-title">
+                <h2>Tin Tức & Hướng Dẫn Kỹ Thuật</h2>
+                <p>Cập nhật công nghệ, tài liệu Datasheet & Hướng dẫn cài đặt cho Kỹ thuật viên</p>
+            </div>
+
+            <div class="grid grid-3">
+                <article class="news-card">
+                    <div class="news-tag">Hướng dẫn kỹ thuật</div>
+                    <h3>Cách cấu hình Wi-Fi Roaming Mesh Ruijie Reyee từ A-Z</h3>
+                    <p>Bài viết chi tiết các bước tạo SSID, cấu hình VLAN và tối ưu hóa băng thông cho tòa nhà 5 tầng.</p>
+                    <a href="#" class="read-more" onclick="alert('Đang tải bài viết chi tiết...'); return false;">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="news-card">
+                    <div class="news-tag">Đánh giá thiết bị</div>
+                    <h3>So sánh Camera IP Hikvision ColorVu và Dahua Full-Color</h3>
+                    <p>Phân tích khả năng ghi hình ban đêm có màu, độ nhạy sáng lux và chuẩn nén H.265+ thực tế.</p>
+                    <a href="#" class="read-more" onclick="alert('Đang tải bài viết chi tiết...'); return false;">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+                <article class="news-card">
+                    <div class="news-tag">Giải pháp B2B</div>
+                    <h3>Tiêu chuẩn thi công cáp mạng Cat6 cho phòng Server Doanh Nghiệp</h3>
+                    <p>Quy chuẩn đi dây Patch Panel, đấm dây nhân RJ45 chuẩn T568B và dán nhãn nhãn nhảy cáp.</p>
+                    <a href="#" class="read-more" onclick="alert('Đang tải bài viết chi tiết...'); return false;">Đọc tiếp <i class="fa-solid fa-arrow-right"></i></a>
+                </article>
+            </div>
+        </section>
+
+        <!-- 6. PAGE: ADMIN & REST API TOOL -->
+        <section id="page-admin" class="page-section">
+            <div class="section-title">
+                <h2>Trang Quản Trị Hệ Thống & REST API Controller</h2>
+                <p>Khu vực dành cho nhân viên 3A: Quản lý mặt hàng, tra cứu báo lỗi & tích hợp API hệ thống</p>
+            </div>
+
+            <!-- ADMIN STATS -->
+            <div class="grid grid-4" style="margin-bottom: 25px;">
+                <div class="admin-stat-card">
+                    <div class="stat-number" id="stat-total-items">8</div>
+                    <div class="stat-label">Tổng mặt hàng trong kho</div>
+                </div>
+                <div class="admin-stat-card warning">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Cảnh báo tồn kho thấp</div>
+                </div>
+                <div class="admin-stat-card success">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Yêu cầu Báo giá B2B hôm nay</div>
+                </div>
+                <div class="admin-stat-card info">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Sản phẩm đang bảo trì</div>
+                </div>
+            </div>
+
+            <!-- REST API TESTER -->
+            <div class="api-tester-card">
+                <h3><i class="fa-solid fa-network-wired"></i> REST API Interactive Explorer (Mặt hàng & Hệ thống)</h3>
+                <p>Công cụ gọi và kiểm tra endpoint API quản lý mặt hàng thời gian thực cho tích hợp phần mềm kế toán/ERP.</p>
+
+                <div class="api-controls">
+                    <select id="api-method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                    <select id="api-endpoint">
+                        <option value="/api/v1/products">/api/v1/products (Lấy danh sách mặt hàng)</option>
+                        <option value="/api/v1/products/3A-CAM-01">/api/v1/products/3A-CAM-01 (Chi tiết Camera Hikvision)</option>
+                        <option value="/api/v1/warranty/3A-889911">/api/v1/warranty/3A-889911 (Kiểm tra IMEI bảo hành)</option>
+                        <option value="/api/v1/quotes">/api/v1/quotes (Xuất báo giá B2B JSON)</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="executeApiCall()"><i class="fa-solid fa-play"></i> Gửi Request API</button>
+                </div>
+
+                <div class="api-response-wrapper">
+                    <div class="api-header-info">
+                        <span>Status: <strong id="api-status" class="badge-accent">200 OK</strong></span>
+                        <span>Response Time: <strong id="api-time">18 ms</strong></span>
+                        <span>Format: JSON</span>
+                    </div>
+                    <pre id="api-json-output"><code>// Kết quả phản hồi API từ server 3A sẽ hiển thị tại đây...</code></pre>
+                </div>
+            </div>
+        </section>
+
     </main>
 
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <div class="logo-area" style="margin-bottom:15px;">
+                    <div class="logo-icon">3A</div>
+                    <div class="logo-text">
+                        <span class="brand-name" style="color:#fff;">3A TECH</span>
+                        <span class="brand-tagline">Technology & Solutions</span>
+                    </div>
+                </div>
+                <p>CÔNG TY TNHH CÔNG NGHỆ & GIẢI PHÁP 3A</p>
+                <p>Chuyên tư vấn, thiết kế, thi công hệ thống Camera giám sát, Mạng doanh nghiệp, Tổng đài & Điện nhẹ ELV chuyên nghiệp.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Giải Pháp Cốt Lõi</h4>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('page-solutions'); return false;">Thi công mạng LAN / Wi-Fi Mesh</a></li>
+                    <li><a href="#" onclick="navigateTo('page-solutions'); return false;">Camera quan sát AI thông minh</a></li>
+                    <li><a href="#" onclick="navigateTo('page-solutions'); return false;">Tổng đài VoIP & Chấm công</a></li>
+                    <li><a href="#" onclick="navigateTo('page-solutions'); return false;">Nhà thông minh & Khóa cửa</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Hỗ Trợ Khách Hàng</h4>
+                <ul>
+                    <li><a href="#" onclick="navigateTo('page-warranty'); return false;">Tra cứu bảo hành thiết bị</a></li>
+                    <li><a href="#" onclick="openQuoteModal(); return false;">Yêu cầu báo giá VAT B2B</a></li>
+                    <li><a href="#" onclick="navigateTo('page-admin'); return false;">Cổng API cho đối tác</a></li>
+                    <li><a href="#">Quy trình bảo trì tận nơi</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Thanh Toán & Vận Chuyển</h4>
+                <div class="payment-icons">
+                    <span class="pay-tag"><i class="fa-solid fa-qrcode"></i> VNPay</span>
+                    <span class="pay-tag"><i class="fa-solid fa-credit-card"></i> Trả góp 0%</span>
+                    <span class="pay-tag"><i class="fa-solid fa-truck-fast"></i> GHTK / GHN</span>
+                </div>
+                <p style="margin-top:15px;"><i class="fa-solid fa-phone"></i> Tổng đài B2B: <strong>0909 3A3A 3A</strong></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 CÔNG TY TNHH CÔNG NGHỆ & GIẢI PHÁP 3A. Thiết kế giao diện lấy cảm hứng từ dntech.vn.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOATING CONTACT BUTTONS -->
+    <div class="floating-contact">
+        <a href="https://zalo.me" target="_blank" class="float-btn zalo-btn" title="Chat Zalo ngay">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span class="tooltip">Zalo B2B</span>
+        </a>
+        <a href="tel:19003232" class="float-btn phone-btn" title="Gọi Hotline">
+            <i class="fa-solid fa-phone-volume"></i>
+            <span class="tooltip">Hotline 24/7</span>
+        </a>
+        <button class="float-btn ai-btn" onclick="toggleChatbot()" title="Trợ lý AI 3A">
+            <i class="fa-solid fa-robot"></i>
+            <span class="tooltip">Trợ Lý AI</span>
+        </button>
+    </div>
+
+    <!-- AI CHATBOT MODAL -->
+    <div id="chatbot-window" class="chatbot-window">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <i class="fa-solid fa-robot"></i>
+                <div>
+                    <strong>3A Tech Assistant (AI)</strong>
+                    <small>Tư vấn kỹ thuật & Báo giá 24/7</small>
+                </div>
+            </div>
+            <button class="btn-close" onclick="toggleChatbot()">&times;</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="chat-msg bot">
+                Xin chào! Tôi là Trợ lý AI của <strong>Công nghệ 3A</strong>. Tôi có thể tư vấn giải pháp Camera, Mạng Wi-Fi hoặc tra cứu tình trạng đơn hàng cho bạn!
+            </div>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chat-input" placeholder="Hỏi về camera 4K, Wi-Fi mesh, báo giá..." onkeypress="handleChatKeyPress(event)">
+            <button onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- CART & B2B QUOTE MODAL -->
+    <div id="cart-modal" class="modal-backdrop">
+        <div class="modal-body printable-area">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-file-invoice"></i> Danh Sách Báo Giá / Giỏ Hàng B2B</h2>
+                <button class="btn-close no-print" onclick="closeCartModal()">&times;</button>
+            </div>
+            <div class="modal-content">
+                <!-- PRINT HEADER FOR B2B -->
+                <div class="print-company-header">
+                    <h2>CÔNG TY TNHH CÔNG NGHỆ & GIẢI PHÁP 3A</h2>
+                    <p>Địa chỉ: 123 Đường Công Nghệ, Q. Tân Bình, TP. Hồ Chí Minh | MST: 0312345678</p>
+                    <p>Hotline: 1900 3A3A | Website: www.3atech.vn | Email: kinhdoanh@3atech.vn</p>
+                    <hr>
+                    <h3 style="text-align:center; margin: 15px 0;">BẢNG BÁO GIÁ THIẾT BỊ & DỊCH VỤ THI CÔNG</h3>
+                </div>
+
+                <div id="cart-items-container">
+                    <!-- Dynamic Cart Items Table -->
+                </div>
+
+                <div class="b2b-customer-info-form no-print">
+                    <h4>Thông tin doanh nghiệp nhận Báo Giá PDF:</h4>
+                    <div class="grid grid-2" style="gap:10px;">
+                        <input type="text" id="b2b-company-name" placeholder="Tên Công Ty / Đơn Vị">
+                        <input type="text" id="b2b-tax-code" placeholder="Mã Số Thuế (MST)">
+                        <input type="text" id="b2b-contact-person" placeholder="Người liên hệ / Chức vụ">
+                        <input type="text" id="b2b-phone" placeholder="Số điện thoại nhận mail">
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-line">
+                        <span>Tạm tính tiền hàng:</span>
+                        <strong id="cart-subtotal">0 VNĐ</strong>
+                    </div>
+                    <div class="summary-line">
+                        <span>Thuế VAT (10% B2B):</span>
+                        <strong id="cart-vat">0 VNĐ</strong>
+                    </div>
+                    <div class="summary-line total">
+                        <span>TỔNG CỘNG CHÍNH THỨC:</span>
+                        <strong id="cart-grand-total" style="color:var(--primary); font-size:1.4rem;">0 VNĐ</strong>
+                    </div>
+                </div>
+
+                <div class="b2b-footer-stamp">
+                    <div style="float:left; text-align:center; width:200px;">
+                        <p><strong>Đại Diện Khách Hàng</strong></p>
+                        <small>(Ký & ghi rõ họ tên)</small>
+                    </div>
+                    <div style="float:right; text-align:center; width:200px;">
+                        <p><strong>CÔNG TY CÔNG NGHỆ 3A</strong></p>
+                        <small>(Đã đóng dấu ấn số)</small>
+                        <div class="stamp-box">3A TECH OFFICIAL</div>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+            <div class="modal-footer no-print">
+                <button class="btn btn-outline" onclick="closeCartModal()">Đóng</button>
+                <button class="btn btn-accent" onclick="exportB2BPdf()"><i class="fa-solid fa-file-pdf"></i> Xuất Báo Giá PDF / In Trang</button>
+                <button class="btn btn-primary" onclick="submitOrder()"><i class="fa-solid fa-check"></i> Xác Nhận Đặt Hàng / Gửi Yêu Cầu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DATASHEET MODAL -->
+    <div id="datasheet-modal" class="modal-backdrop">
+        <div class="modal-body" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-pdf"></i> Tài Liệu Kỹ Thuật (Datasheet)</h3>
+                <button class="btn-close" onclick="closeDatasheetModal()">&times;</button>
+            </div>
+            <div class="modal-content" id="datasheet-content" style="padding: 20px; text-align: center;">
+                <!-- Datasheet info -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeDatasheetModal()">Đóng</button>
+                <button class="btn btn-primary" onclick="alert('Đang tải file Datasheet PDF chuẩn về máy...'); closeDatasheetModal();"><i class="fa-solid fa-download"></i> Tải File PDF Gốc</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
