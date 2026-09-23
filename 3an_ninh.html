@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3A - Giải Pháp Công Nghệ, Thiết Bị Mạng & An Ninh</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0265a6',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-nav { backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.9); }
+        .dark .glass-nav { background-color: rgba(15, 23, 42, 0.9); }
+        @media print {
+            body * { visibility: hidden; }
+            #printableQuoteArea, #printableQuoteArea * { visibility: visible; }
+            #printableQuoteArea { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Top Bar -->
+    <div class="bg-slate-900 text-slate-300 text-xs py-2 px-4 no-print border-b border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center space-x-4">
+                <span class="flex items-center"><i class="fa-solid fa-building text-brand-500 mr-1.5"></i> 3A Tech Building, 123 Nguyễn Văn Cừ, Q.5, TP.HCM</span>
+                <span class="hidden md:inline flex items-center"><i class="fa-solid fa-envelope text-brand-500 mr-1.5"></i> contact@3a.vn</span>
+                <span class="flex items-center"><i class="fa-solid fa-phone-volume text-emerald-400 mr-1.5 animate-pulse"></i> Hotline: 1900 3A3A (0903 3A 3A 3A)</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleWholesaleMode()" id="wholesaleBtn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-amber-500/30 px-2.5 py-1 rounded-full text-xs font-semibold flex items-center transition">
+                    <i class="fa-solid fa-briefcase mr-1.5"></i> <span id="wholesaleText">Chế độ: Khách Bán Lẻ</span>
+                </button>
+                <button onclick="toggleDarkMode()" class="text-slate-400 hover:text-white p-1">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200 dark:border-slate-800 shadow-sm no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('homeView')">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-brand-700 to-cyan-500 rounded-xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-brand-500/30">
+                        3A
+                    </div>
+                    <div>
+                        <div class="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
+                            3A Technology <span class="bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 text-[10px] font-extrabold px-1.5 py-0.5 rounded">3A.VN</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Giải Pháp An Ninh & Hạ Tầng Mạng</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center space-x-1 text-sm font-medium">
+                    <button onclick="switchTab('homeView')" id="nav-homeView" class="nav-btn px-3 py-2 rounded-lg text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-slate-800/80 font-semibold">Trang Chủ</button>
+                    <button onclick="switchTab('catalogView')" id="nav-catalogView" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white">Sản Phẩm & Thiết Bị</button>
+                    <button onclick="switchTab('solutionsView')" id="nav-solutionsView" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white">Giải Pháp B2B</button>
+                    <button onclick="switchTab('warrantyView')" id="nav-warrantyView" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white">Tra Cứu Bảo Hành</button>
+                    <button onclick="switchTab('quoteView')" id="nav-quoteView" class="nav-btn px-3 py-2 rounded-lg text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white flex items-center gap-1">
+                        <i class="fa-solid fa-file-invoice text-amber-500"></i> Báo Giá Quick PDF
+                    </button>
+                    <button onclick="switchTab('adminView')" id="nav-adminView" class="nav-btn px-3 py-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-700 ml-2">
+                        <i class="fa-solid fa-user-shield text-slate-400 mr-1"></i> 3A Admin
+                    </button>
+                </nav>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="openCalcModal()" class="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition">
+                        <i class="fa-solid fa-calculator text-brand-600 dark:text-brand-400"></i> Tính Dung Lượng HDD
+                    </button>
+                    <button onclick="toggleCartDrawer()" class="relative p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition">
+                        <i class="fa-solid fa-cart-shopping text-lg"></i>
+                        <span id="cartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-slate-700 dark:text-slate-200 rounded-lg">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobileMenu" class="hidden lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('homeView'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Trang Chủ</button>
+            <button onclick="switchTab('catalogView'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Sản Phẩm & Thiết Bị</button>
+            <button onclick="switchTab('solutionsView'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Giải Pháp B2B</button>
+            <button onclick="switchTab('warrantyView'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Tra Cứu Bảo Hành</button>
+            <button onclick="switchTab('quoteView'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Báo Giá PDF 3A</button>
+            <button onclick="switchTab('adminView'); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">3A Admin Portal</button>
+            <button onclick="openCalcModal(); toggleMobileMenu();" class="block w-full text-left px-3 py-2 rounded-md font-medium text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30"><i class="fa-solid fa-calculator mr-2"></i>Tính Dung Lượng Ổ Cứng NVR</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow">
+        
+        <!-- SECTION 1: HOME VIEW -->
+        <section id="homeView" class="tab-content">
+            <!-- Hero Banner -->
+            <div class="relative bg-slate-900 text-white overflow-hidden py-16 lg:py-24">
+                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-7 space-y-6">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/20 border border-brand-400/30 text-brand-300 text-xs font-semibold">
+                                <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                Công ty Công Nghệ 3A - Đối Tác Hạ Tầng Công Nghệ Số #1
+                            </div>
+                            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                                Hệ Thống An Ninh AI <br>
+                                <span class="bg-gradient-to-r from-brand-400 via-cyan-300 to-amber-300 bg-clip-text text-transparent">Hạ Tầng Mạng Doanh Nghiệp 3A</span>
+                            </h1>
+                            <p class="text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed">
+                                3A Technology chuyên cung cấp thiết bị camera AI thông minh, giải pháp mạng Wi-Fi 6 Doanh nghiệp, Server lưu trữ & Hệ thống kiểm soát ra vào Smart Building trên toàn quốc.
+                            </p>
+                            <div class="flex flex-wrap gap-4 pt-2">
+                                <button onclick="switchTab('catalogView')" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold shadow-lg shadow-brand-600/40 flex items-center gap-2 transition">
+                                    <i class="fa-solid fa-shapes"></i> Khám Phá Sản Phẩm
+                                </button>
+                                <button onclick="switchTab('quoteView')" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 font-semibold flex items-center gap-2 transition">
+                                    <i class="fa-solid fa-file-signature"></i> Tạo Báo Giá Đại Lý 3A
+                                </button>
+                            </div>
+                            <!-- Live Stats -->
+                            <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-800 text-center sm:text-left">
+                                <div>
+                                    <p class="text-2xl font-bold text-white">1,500+</p>
+                                    <p class="text-xs text-slate-400">Dự án hoàn thành</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-white">200+</p>
+                                    <p class="text-xs text-slate-400">Đại lý ủy quyền 3A</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-white">24/7</p>
+                                    <p class="text-xs text-slate-400">Hỗ trợ kỹ thuật 3A</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5">
+                            <div class="relative mx-auto max-w-md bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 p-6 rounded-2xl shadow-2xl">
+                                <div class="flex items-center justify-between mb-4 border-b border-slate-700 pb-3">
+                                    <span class="text-xs font-bold text-brand-400 uppercase tracking-wider"><i class="fa-solid fa-microchip mr-1"></i> Hệ sinh thái Công Nghệ 3A</span>
+                                    <span class="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded font-semibold">2026 Ready</span>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-brand-500/20 flex items-center justify-center text-brand-400">
+                                            <i class="fa-solid fa-video text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-white">3A AI Security Vision</h4>
+                                            <p class="text-xs text-slate-400">Nhận diện khuôn mặt & biển số chính xác 99.8%</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center text-cyan-400">
+                                            <i class="fa-solid fa-wifi text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-white">3A Enterprise Mesh Wi-Fi 6</h4>
+                                            <p class="text-xs text-slate-400">Chịu tải 500+ user đồng thời, Zero-Roaming</p>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 bg-slate-800/80 rounded-xl border border-slate-700 flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400">
+                                            <i class="fa-solid fa-server text-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-white">3A Cloud Storage Server</h4>
+                                            <p class="text-xs text-slate-400">Đồng bộ dữ liệu mã hóa AES-256 an toàn</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Value Proposition Grid -->
+            <div class="py-12 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 mx-auto flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-award text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">Chính Hãng 3A 100%</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Đầy đủ CO, CQ và giấy chứng nhận xuất xưởng từ Công ty 3A.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 mx-auto flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">Bảo Hành 24 - 36 Tháng</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Đổi mới 1-đổi-1 trong 30 ngày đầu, bảo hành tận nơi.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-truck-fast text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">Giao Hàng Siêu Tốc</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Giao hỏa tốc 2H nội thành TP.HCM & Hà Nội.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 mx-auto flex items-center justify-center mb-3">
+                                <i class="fa-solid fa-headset text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-900 dark:text-white">Hỗ Trợ Kỹ Thuật 3A</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Đội ngũ kỹ sư 3A tư vấn khảo sát thiết kế miễn phí.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Showcase Projects -->
+            <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+                    <div>
+                        <span class="text-brand-600 dark:text-brand-400 text-xs font-bold uppercase tracking-wider">Hồ Sơ Năng Lực 3A</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Dự Án Đã Triển Khai Tiêu Biểu</h2>
+                    </div>
+                    <button onclick="switchTab('solutionsView')" class="mt-4 md:mt-0 text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1">
+                        Xem tất cả giải pháp <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Project 1 -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
+                        <div class="h-48 bg-gradient-to-r from-blue-900 to-indigo-900 relative p-6 flex flex-col justify-between">
+                            <span class="bg-brand-500/80 text-white text-[10px] font-bold px-2 py-1 rounded w-fit uppercase">Khu Đô Thị Smart City</span>
+                            <div>
+                                <h3 class="text-white text-lg font-bold">Dự án Vinhomes 3A Surveillance</h3>
+                                <p class="text-slate-300 text-xs mt-1"><i class="fa-solid fa-location-dot mr-1"></i> TP. Hồ Chí Minh</p>
+                            </div>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Lắp đặt 320+ Camera AI 3A PTZ Zoom 45x nhận diện khuôn mặt cư dân, kết nối trung tâm điều hành thông minh SOC.</p>
+                            <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                                <span>Quy mô: <strong>320 Camera</strong></span>
+                                <span>Hoàn thành: <strong>2025</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
+                        <div class="h-48 bg-gradient-to-r from-cyan-900 to-slate-900 relative p-6 flex flex-col justify-between">
+                            <span class="bg-cyan-500/80 text-white text-[10px] font-bold px-2 py-1 rounded w-fit uppercase">Mạng Doanh Nghiệp</span>
+                            <div>
+                                <h3 class="text-white text-lg font-bold">Viettel 3A Data Center Wi-Fi 6</h3>
+                                <p class="text-slate-300 text-xs mt-1"><i class="fa-solid fa-location-dot mr-1"></i> Hà Nội</p>
+                            </div>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Hạ tầng Switch Core 10G 3A & Mesh Wi-Fi 6 phủ sóng 8 tầng văn phòng, đảm bảo tốc độ 2.5Gbps ổn định.</p>
+                            <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                                <span>Chịu tải: <strong>1,200 Client</strong></span>
+                                <span>Hoàn thành: <strong>2026</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project 3 -->
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition">
+                        <div class="h-48 bg-gradient-to-r from-amber-900 to-slate-900 relative p-6 flex flex-col justify-between">
+                            <span class="bg-amber-500/80 text-white text-[10px] font-bold px-2 py-1 rounded w-fit uppercase">Chuỗi Bán Lẻ</span>
+                            <div>
+                                <h3 class="text-white text-lg font-bold">Chuỗi 3A Smart Store (50 Cửa Hàng)</h3>
+                                <p class="text-slate-300 text-xs mt-1"><i class="fa-solid fa-location-dot mr-1"></i> Toàn Quốc</p>
+                            </div>
+                        </div>
+                        <div class="p-5 space-y-3">
+                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">Tích hợp camera đếm lượt khách Heatmap, chuông báo động trung tâm và kiểm soát cửa vân tay 3A.</p>
+                            <div class="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                                <span>Số điểm: <strong>50 Cửa hàng</strong></span>
+                                <span>Hoàn thành: <strong>2026</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PRODUCT CATALOG VIEW -->
+        <section id="catalogView" class="tab-content hidden py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                
+                <!-- Sidebar Filters -->
+                <aside class="w-full lg:w-64 space-y-6 flex-shrink-0">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                            <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-filter text-brand-600"></i> Bộ Lọc 3A
+                            </h3>
+                            <button onclick="resetFilters()" class="text-xs text-brand-600 dark:text-brand-400 hover:underline">Xóa lọc</button>
+                        </div>
+
+                        <!-- Search Box -->
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5 block">Tìm Kiếm Thiết Bị</label>
+                            <div class="relative">
+                                <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Mã sp, camera, switch..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 outline-none">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2 block">Danh Mục Công Nghệ 3A</label>
+                            <div class="space-y-1.5 text-xs">
+                                <label class="flex items-center space-x-2 cursor-pointer p-1.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg">
+                                    <input type="radio" name="categoryFilter" value="all" checked onchange="filterProducts()" class="text-brand-600">
+                                    <span>Tất Cả Sản Phẩm</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer p-1.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg">
+                                    <input type="radio" name="categoryFilter" value="camera" onchange="filterProducts()" class="text-brand-600">
+                                    <span>Camera AI & NVR 3A</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer p-1.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg">
+                                    <input type="radio" name="categoryFilter" value="network" onchange="filterProducts()" class="text-brand-600">
+                                    <span>Switch & Enterprise Network</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer p-1.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg">
+                                    <input type="radio" name="categoryFilter" value="access" onchange="filterProducts()" class="text-brand-600">
+                                    <span>Kiểm Soát Vào Ra Smart Access</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer p-1.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg">
+                                    <input type="radio" name="categoryFilter" value="storage" onchange="filterProducts()" class="text-brand-600">
+                                    <span>Ổ Cứng & Server Lưu Trữ</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Range Slider -->
+                        <div>
+                            <div class="flex justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                                <span>Mức Giá Tối Đa</span>
+                                <span id="priceLabel" class="text-brand-600 dark:text-brand-400 font-bold">50,000,000đ</span>
+                            </div>
+                            <input type="range" id="priceRange" min="500000" max="50000000" step="500000" value="50000000" oninput="updatePriceLabel(this.value); filterProducts();" class="w-full accent-brand-600">
+                        </div>
+
+                        <!-- Fast Tools Banner -->
+                        <div class="bg-gradient-to-br from-brand-900 to-slate-900 text-white p-4 rounded-xl text-xs space-y-2">
+                            <p class="font-bold text-amber-400"><i class="fa-solid fa-calculator mr-1"></i> Tool HDD Calculator</p>
+                            <p class="text-slate-300">Tính chính xác số Terabyte ổ cứng cần mua cho dự án.</p>
+                            <button onclick="openCalcModal()" class="w-full py-1.5 bg-brand-600 hover:bg-brand-500 rounded-lg font-semibold transition text-center">Mở Công Cụ Tính</button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Catalog List -->
+                <main class="flex-grow">
+                    <!-- Top Toolbar -->
+                    <div class="flex flex-col sm:flex-row justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 mb-6 gap-3">
+                        <div class="text-xs text-slate-500 dark:text-slate-400">
+                            Hiển thị <span id="productCount" class="font-bold text-slate-900 dark:text-white">0</span> thiết bị chính hãng 3A
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="text-xs text-slate-500">Sắp xếp:</label>
+                            <select id="sortSelect" onchange="filterProducts()" class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs rounded-lg px-3 py-1.5 font-medium outline-none">
+                                <option value="default">Mặc định</option>
+                                <option value="price-asc">Giá: Thấp đến Cao</option>
+                                <option value="price-desc">Giá: Cao đến Thấp</option>
+                                <option value="name">Tên sản phẩm A-Z</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic JavaScript rendering -->
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <!-- SECTION 3: B2B SOLUTIONS VIEW -->
+        <section id="solutionsView" class="tab-content hidden py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <span class="bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 text-xs font-bold px-3 py-1 rounded-full uppercase">Giải Pháp B2B Toàn Diện</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Tư Vấn & Thiết Kế Hạ Tầng Công Nghệ 3A</h2>
+                <p class="text-slate-600 dark:text-slate-300 text-sm">Chúng tôi đồng hành cùng Tòa nhà, Nhà máy, Chuỗi siêu thị & Trường học triển khai hệ thống công nghệ hiện đại, vận hành bền bỉ 24/7.</p>
+            </div>
+
+            <!-- Solutions Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-brand-500/30">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">1. Giải Pháp Camera AI & An Ninh Giám Sát 3A</h3>
+                        <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                            Tích hợp AI trí tuệ nhân tạo phát hiện đột nhập, kiểm soát biển số xe tự động (ANPR), cảnh báo hỏa hoạn sớm và phân tích hành vi khách hàng qua Heatmap.
+                        </p>
+                        <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Lưu trữ Cloud mã hóa song song NVR nội bộ.</li>
+                            <li class="flex items-center"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Tích hợp phần mềm quản lý tập trung 3A VMS Central.</li>
+                        </ul>
+                    </div>
+                    <button onclick="openSolutionQuote('Giải Pháp Camera AI Surveillance 3A')" class="w-full py-3 bg-slate-900 dark:bg-slate-700 hover:bg-brand-600 text-white font-semibold rounded-xl text-xs transition">Nhận Khảo Sát & Báo Giá B2B</button>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30">
+                            <i class="fa-solid fa-network-wired"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white">2. Hạ Tầng Mạng & Switch PoE Doanh Nghiệp</h3>
+                        <p class="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
+                            Quy hoạch mạng LAN/WAN chuẩn TIA-568, lắp đặt Switch Core 10G/40G, hệ thống Wi-Fi 6 Mesh chịu tải cao cho văn phòng từ 50 đến 5,000 nhân sự.
+                        </p>
+                        <ul class="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Chống nhiễu sóng, Roaming mượt mà không rớt mạng.</li>
+                            <li class="flex items-center"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Firewall bảo vệ dữ liệu nội bộ chuẩn doanh nghiệp.</li>
+                        </ul>
+                    </div>
+                    <button onclick="openSolutionQuote('Hạ Tầng Mạng & Wi-Fi 6 Doanh Nghiệp 3A')" class="w-full py-3 bg-slate-900 dark:bg-slate-700 hover:bg-brand-600 text-white font-semibold rounded-xl text-xs transition">Nhận Khảo Sát & Báo Giá B2B</button>
+                </div>
+            </div>
+
+            <!-- 3A Implementation Process 5-Steps -->
+            <div class="bg-slate-900 text-white p-8 sm:p-12 rounded-3xl space-y-8">
+                <div class="text-center max-w-xl mx-auto">
+                    <h3 class="text-2xl font-bold">Quy Trình Triển Khai 5 Bước Chuẩn 3A</h3>
+                    <p class="text-slate-400 text-xs mt-1">Đảm bảo đúng tiến độ, tối ưu chi phí và bàn giao vận hành chuyên nghiệp.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 text-center">
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center mx-auto text-sm">1</div>
+                        <h4 class="font-bold text-sm">Tư Vấn & Khảo Sát</h4>
+                        <p class="text-[11px] text-slate-400">Kỹ sư 3A tới tận nơi khảo sát mặt bằng miễn phí.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center mx-auto text-sm">2</div>
+                        <h4 class="font-bold text-sm">Lập Bản Vẽ & CAD</h4>
+                        <p class="text-[11px] text-slate-400">Thiết kế sơ đồ nguyên lý và vị trí lắp đặt chi tiết.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center mx-auto text-sm">3</div>
+                        <h4 class="font-bold text-sm">Báo Giá & Hợp Đồng</h4>
+                        <p class="text-[11px] text-slate-400">Cam kết chi phí minh bạch, CO/CQ sản phẩm 3A.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center mx-auto text-sm">4</div>
+                        <h4 class="font-bold text-sm">Thi Công & Test</h4>
+                        <p class="text-[11px] text-slate-400">Đội ngũ kỹ thuật thi công nhanh, gọn, an toàn.</p>
+                    </div>
+                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 space-y-2">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center mx-auto text-sm">5</div>
+                        <h4 class="font-bold text-sm">Bàn Giao & Bảo Trì</h4>
+                        <p class="text-[11px] text-slate-400">Hướng dẫn sử dụng và bảo hành định kỳ 3A.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: WARRANTY LOOKUP VIEW -->
+        <section id="warrantyView" class="tab-content hidden py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            <div class="text-center space-y-3">
+                <span class="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase">Trung Tâm Bảo Hành 3A</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Tra Cứu Bảo Hành Điện Tử 3A</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Nhập Mã Serial Number (S/N) hoặc Số điện thoại mua hàng để kiểm tra thời hạn bảo hành chính hãng.</p>
+            </div>
+
+            <!-- Search Warranty Input -->
+            <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md space-y-4">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="warrantyQuery" placeholder="Nhập mã S/N (ví dụ: 3A-CAM-8892, 3A-NET-1029) hoặc SĐT (0903888999)..." class="flex-grow px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                    <button onclick="searchWarranty()" class="px-8 py-3 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl text-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tra Cứu Ngay
+                    </button>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <span>Thử mã mẫu:</span>
+                    <button onclick="fillWarrantySample('3A-CAM-8892')" class="text-brand-600 dark:text-brand-400 underline font-mono">3A-CAM-8892</button>
+                    <span>•</span>
+                    <button onclick="fillWarrantySample('3A-NET-1029')" class="text-brand-600 dark:text-brand-400 underline font-mono">3A-NET-1029</button>
+                    <span>•</span>
+                    <button onclick="fillWarrantySample('0903888999')" class="text-brand-600 dark:text-brand-400 underline font-mono">0903888999</button>
+                </div>
+            </div>
+
+            <!-- Result Display Box -->
+            <div id="warrantyResult" class="hidden">
+                <!-- Dynamic Warranty Result Content inserted here -->
+            </div>
+        </section>
+
+        <!-- SECTION 5: B2B PDF QUOTE GENERATOR VIEW -->
+        <section id="quoteView" class="tab-content hidden py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 dark:border-slate-700 pb-4 no-print gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-red-500"></i> Báo Giá Nhanh B2B - Công ty 3A
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Tự động xuất file PDF báo giá chính thức kèm tem mộc Công ty TNHH Công Nghệ 3A.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="addQuoteSampleItem()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700">
+                        <i class="fa-solid fa-plus mr-1"></i> Thêm SP Mẫu
+                    </button>
+                    <button onclick="window.print()" class="px-6 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-red-500/30 flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> In / Xuất PDF Báo Giá 3A
+                    </button>
+                </div>
+            </div>
+
+            <!-- Printable Quote Sheet -->
+            <div id="printableQuoteArea" class="bg-white text-slate-900 p-8 sm:p-12 rounded-2xl border border-slate-300 shadow-xl max-w-4xl mx-auto">
+                <!-- Quote Header -->
+                <div class="flex justify-between items-start border-b-2 border-slate-900 pb-6 mb-6">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 bg-slate-900 text-white rounded-xl flex items-center justify-center font-extrabold text-2xl">
+                            3A
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-extrabold text-slate-900 uppercase">CÔNG TY TNHH CÔNG NGHỆ 3A</h1>
+                            <p class="text-xs text-slate-600">Địa chỉ: 3A Tech Building, 123 Nguyễn Văn Cừ, Quận 5, TP.HCM</p>
+                            <p class="text-xs text-slate-600">Hotline: 1900 3A3A | Email: contact@3a.vn | Web: www.3a.vn</p>
+                            <p class="text-xs text-slate-600">Mã Số Thuế: 03189993A</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <h2 class="text-xl font-black text-brand-700 uppercase tracking-wide">BẢNG BÁO GIÁ</h2>
+                        <p class="text-xs text-slate-500 font-mono mt-1">Số: BG-3A-2026/088</p>
+                        <p class="text-xs text-slate-500">Ngày: <span id="quoteDateStr">22/09/2026</span></p>
+                    </div>
+                </div>
+
+                <!-- Customer Info Inputs (No-print editable fields) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-slate-500 block">Đơn Vị Khách Hàng:</label>
+                        <input type="text" id="quoteCustomerName" value="Công ty CP Tập Đoàn Công Nghệ Nam Việt" class="w-full bg-transparent font-bold text-sm text-slate-900 border-b border-dashed border-slate-400 outline-none py-1">
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase font-bold text-slate-500 block">Người Đại Diện / SĐT:</label>
+                        <input type="text" id="quoteCustomerContact" value="Mr. Nguyễn Văn Minh - 0912 345 678" class="w-full bg-transparent font-medium text-xs text-slate-800 border-b border-dashed border-slate-400 outline-none py-1">
+                    </div>
+                </div>
+
+                <!-- Quote Items Table -->
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900 text-white uppercase text-[10px] tracking-wider">
+                                <th class="p-2 border border-slate-800 w-10 text-center">STT</th>
+                                <th class="p-2 border border-slate-800">Tên Tên Thiết Bị / Dịch Vụ 3A</th>
+                                <th class="p-2 border border-slate-800 text-center w-16">ĐVT</th>
+                                <th class="p-2 border border-slate-800 text-center w-16">SL</th>
+                                <th class="p-2 border border-slate-800 text-right w-28">Đơn Giá (VNĐ)</th>
+                                <th class="p-2 border border-slate-800 text-right w-32">Thành Tiền (VNĐ)</th>
+                                <th class="p-2 border border-slate-800 text-center w-12 no-print">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quoteTableBody">
+                            <!-- Dynamic quote items -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Calculation Summary -->
+                <div class="flex justify-between items-end border-t border-slate-300 pt-4">
+                    <!-- Official Stamp Box -->
+                    <div class="relative w-48 h-32 border border-dashed border-slate-300 rounded-lg p-2 text-center flex flex-col justify-between">
+                        <p class="text-[10px] font-bold text-slate-600">ĐẠI DIỆN CÔNG TY TNHH CÔNG NGHỆ 3A</p>
+                        <div class="my-auto opacity-80 flex flex-col items-center justify-center">
+                            <div class="w-20 h-20 rounded-full border-2 border-red-600 text-red-600 flex flex-col items-center justify-center text-[9px] font-bold rotate-[-12deg] p-1 text-center leading-tight shadow-sm">
+                                <span>CÔNG TY TNHH</span>
+                                <span class="font-black text-[10px] my-0.5">CÔNG NGHỆ 3A</span>
+                                <span>★ ĐÃ XÁC NHẬN ★</span>
+                            </div>
+                        </div>
+                        <p class="text-[9px] text-slate-500 font-semibold">(Ký, ghi rõ họ tên & đóng dấu)</p>
+                    </div>
+
+                    <div class="w-64 space-y-2 text-xs">
+                        <div class="flex justify-between text-slate-600">
+                            <span>Tổng tiền hàng:</span>
+                            <span id="quoteSubtotal" class="font-bold">0 đ</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600">
+                            <span>Thuế VAT (10%):</span>
+                            <span id="quoteTax" class="font-bold">0 đ</span>
+                        </div>
+                        <div class="flex justify-between text-slate-900 font-extrabold text-sm border-t border-slate-800 pt-2">
+                            <span>Tổng thanh toán:</span>
+                            <span id="quoteGrandTotal" class="text-red-600">0 đ</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 text-[10px] text-slate-500 text-center border-t border-slate-200 pt-3">
+                    Báo giá này có hiệu lực trong vòng 15 ngày kể từ ngày ban hành. Cảm ơn Quý khách hàng đã tin tưởng lựa chọn Công ty Công Nghệ 3A!
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: ADMIN DASHBOARD VIEW -->
+        <section id="adminView" class="tab-content hidden py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-gauge-high text-brand-600"></i> 3A Admin Management Portal
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Hệ thống quản trị doanh thu, kho hàng và yêu cầu bảo hành 3A.</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="bg-emerald-500/10 text-emerald-500 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-emerald-500/20">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Hệ Thống 3A Online
+                    </span>
+                </div>
+            </div>
+
+            <!-- Analytics KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Doanh Thu Tháng</span>
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 dark:text-white">1,820,000,000đ</p>
+                    <span class="text-[11px] text-emerald-500 font-medium"><i class="fa-solid fa-arrow-up"></i> +18.4% so với tháng trước</span>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Đơn Báo Giá B2B</span>
+                        <div class="w-8 h-8 rounded-lg bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 dark:text-white">142 Đơn</p>
+                    <span class="text-[11px] text-brand-500 font-medium">89 Đơn đã chốt hợp đồng</span>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Yêu Cầu Bảo Hành</span>
+                        <div class="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-600 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 dark:text-white">12 Ca</p>
+                    <span class="text-[11px] text-amber-500 font-medium">10 Ca xử lý trong ngày</span>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">Tồn Kho Thiết Bị 3A</span>
+                        <div class="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-900/50 text-purple-600 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                    </div>
+                    <p class="text-2xl font-black text-slate-900 dark:text-white">3,850 SP</p>
+                    <span class="text-[11px] text-purple-500 font-medium">Kho chính 3A Tech HQ</span>
+                </div>
+            </div>
+
+            <!-- Revenue Chart and System Alerts -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm">Biểu Đồ Doanh Số Tăng Trưởng 3A (2026)</h3>
+                    <div class="h-64">
+                        <canvas id="adminSalesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm">Thông Báo Vận Hành</h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 space-y-1">
+                            <div class="flex justify-between font-bold text-slate-900 dark:text-white">
+                                <span><i class="fa-solid fa-circle-exclamation text-amber-500 mr-1"></i> Tồn kho Switch 3A-8P thấp</span>
+                                <span class="text-[10px] text-slate-400">10 phút trước</span>
+                            </div>
+                            <p class="text-slate-500 dark:text-slate-400">Còn lại 4 bộ trong kho. Cần tạo đơn nhập hàng từ xưởng 3A.</p>
+                        </div>
+
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600 space-y-1">
+                            <div class="flex justify-between font-bold text-slate-900 dark:text-white">
+                                <span><i class="fa-solid fa-check-circle text-emerald-500 mr-1"></i> Báo giá Vinhomes chốt</span>
+                                <span class="text-[10px] text-slate-400">1 giờ trước</span>
+                            </div>
+                            <p class="text-slate-500 dark:text-slate-400">Đơn hàng BG-3A-8819 trị giá 420.000.000đ đã ký hợp đồng.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- HDD CALCULATOR MODAL -->
+    <div id="calcModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 max-w-lg w-full rounded-3xl p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-hard-drive text-brand-600"></i> Bảng Tính Dung Lượng Ổ Cứng NVR 3A
+                </h3>
+                <button onclick="closeCalcModal()" class="text-slate-400 hover:text-slate-600 p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <label class="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Số lượng Camera 3A:</label>
+                    <input type="number" id="calcCamCount" value="8" min="1" max="128" onchange="calculateHDD()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl outline-none font-bold">
+                </div>
+
+                <div>
+                    <label class="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Độ phân giải Camera:</label>
+                    <select id="calcRes" onchange="calculateHDD()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl outline-none">
+                        <option value="2">Full HD 1080P (2.0 Megapixel) - 4 Mbps</option>
+                        <option value="4" selected>2K Ultra HD (4.0 Megapixel) - 8 Mbps</option>
+                        <option value="8">4K Ultra HD (8.0 Megapixel) - 16 Mbps</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Chuẩn nén Video:</label>
+                    <select id="calcCodec" onchange="calculateHDD()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl outline-none">
+                        <option value="1">H.264 Thông thường</option>
+                        <option value="0.5" selected>H.265+ Siêu Tiết Kiệm (Công nghệ 3A Smart)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="font-semibold text-slate-700 dark:text-slate-300 block mb-1">Số ngày lưu trữ liên tục (24/7):</label>
+                    <input type="number" id="calcDays" value="30" min="1" max="365" onchange="calculateHDD()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl outline-none font-bold">
+                </div>
+
+                <!-- Result Box -->
+                <div class="p-4 bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 rounded-2xl text-center space-y-1">
+                    <span class="text-[11px] text-brand-700 dark:text-brand-300 font-semibold uppercase">Dung lượng ổ cứng khuyến nghị 3A</span>
+                    <p id="calcResultTB" class="text-3xl font-black text-brand-600 dark:text-brand-400">3.8 TB</p>
+                    <p class="text-[10px] text-slate-500">Khuyên dùng mua: <strong>1 ổ cứng Western Purple / Seagate Skyhawk 4TB</strong></p>
+                </div>
+            </div>
+
+            <button onclick="closeCalcModal()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition">Hoàn Tất & Đóng</button>
+        </div>
+    </div>
+
+    <!-- CART SIDE DRAWER -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="toggleCartDrawer()"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white dark:bg-slate-800 shadow-2xl p-6 flex flex-col justify-between">
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-700 pb-3">
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cart-shopping text-brand-600"></i> Giỏ Hàng & Báo Giá 3A
+                    </h3>
+                    <button onclick="toggleCartDrawer()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                </div>
+                <div id="cartItemsList" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                    <!-- Dynamic cart items -->
+                </div>
+            </div>
+
+            <div class="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
+                <div class="flex justify-between items-center text-sm font-bold text-slate-900 dark:text-white">
+                    <span>Tổng cộng:</span>
+                    <span id="cartTotalPrice" class="text-brand-600 dark:text-brand-400 text-lg">0 đ</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="transferCartToQuote(); toggleCartDrawer(); switchTab('quoteView');" class="py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-file-invoice"></i> Xuất Báo Giá
+                    </button>
+                    <button onclick="alert('Đơn hàng đã gửi tới bộ phận kinh doanh 3A! Chúng tôi sẽ gọi lại trong 15 phút.')" class="py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition">
+                        Đặt Hàng 3A
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING AI CHATBOT ASSISTANT "TRỢ LÝ AI 3A" -->
+    <div id="aiChatbotContainer" class="fixed bottom-6 right-6 z-40 no-print">
+        <!-- Chat Trigger Button -->
+        <button onclick="toggleAIChat()" class="w-14 h-14 bg-gradient-to-tr from-brand-600 to-cyan-500 hover:scale-105 text-white rounded-full flex items-center justify-center shadow-xl shadow-brand-500/40 transition">
+            <i class="fa-solid fa-robot text-2xl"></i>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="aiChatWindow" class="hidden absolute bottom-16 right-0 w-80 sm:w-96 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden flex flex-col h-[480px]">
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-brand-700 to-slate-900 text-white p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-full bg-cyan-400 text-slate-900 font-extrabold flex items-center justify-center text-xs">
+                        3A
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs">Trợ Lý AI 3A Technology</h4>
+                        <span class="text-[10px] text-cyan-300 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Sẵn sàng tư vấn 24/7
+                        </span>
+                    </div>
+                </div>
+                <button onclick="toggleAIChat()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Messages Box -->
+            <div id="aiMessages" class="flex-grow p-4 overflow-y-auto space-y-3 text-xs bg-slate-50 dark:bg-slate-900/50">
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl max-w-[85%] text-slate-700 dark:text-slate-200 shadow-sm space-y-1">
+                    <p class="font-bold text-brand-600 text-[11px]">Trợ Lý AI 3A:</p>
+                    <p>Xin chào! Tôi là Trợ Lý AI 3A. Bạn cần tư vấn báo giá camera, hạ tầng mạng Wi-Fi 6 hay tra cứu bảo hành thiết bị?</p>
+                </div>
+            </div>
+
+            <!-- Quick Suggestions -->
+            <div class="p-2 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex gap-1.5 overflow-x-auto text-[10px] whitespace-nowrap">
+                <button onclick="sendQuickAIMsg('Tư vấn camera AI 3A')" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full hover:bg-brand-50 dark:hover:bg-brand-900/40">📷 Camera AI 3A</button>
+                <button onclick="sendQuickAIMsg('Tính ổ cứng camera')" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full hover:bg-brand-50 dark:hover:bg-brand-900/40">💾 Tính Ổ Cứng</button>
+                <button onclick="sendQuickAIMsg('Chính sách đại lý 3A')" class="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-full hover:bg-brand-50 dark:hover:bg-brand-900/40">💼 Đại Lý B2B</button>
+            </div>
+
+            <!-- Input Box -->
+            <div class="p-3 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex gap-2">
+                <input type="text" id="aiInput" onkeypress="if(event.key==='Enter') sendAIMessage()" placeholder="Nhập câu hỏi cho Trợ Lý AI 3A..." class="flex-grow px-3 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs outline-none focus:ring-2 focus:ring-brand-500">
+                <button onclick="sendAIMessage()" class="w-9 h-9 bg-brand-600 hover:bg-brand-500 text-white rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 no-print mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 bg-brand-600 rounded-lg flex items-center justify-center text-white font-extrabold text-lg">3A</div>
+                        <span class="text-base font-bold text-white tracking-tight">CÔNG TY CÔNG NGHỆ 3A</span>
+                    </div>
+                    <p class="leading-relaxed text-slate-400">
+                        Nhà cung cấp hàng đầu giải pháp Camera AI, thiết bị mạng Wi-Fi 6, server lưu trữ và hạ tầng điện nhẹ cho doanh nghiệp trên toàn quốc.
+                    </p>
+                    <div class="flex space-x-3 text-slate-300">
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-brand-600 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-brand-600 transition"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-brand-600 transition"><i class="fa-brands fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <!-- Products Link -->
+                <div>
+                    <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px]">Sản Phẩm 3A</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="switchTab('catalogView')" class="hover:text-white">Camera AI Nhận Diện Khuôn Mặt</a></li>
+                        <li><a href="#" onclick="switchTab('catalogView')" class="hover:text-white">Đầu Ghi NVR 3A Smart 64 Kênh</a></li>
+                        <li><a href="#" onclick="switchTab('catalogView')" class="hover:text-white">Switch PoE Chịu Tải Cao</a></li>
+                        <li><a href="#" onclick="switchTab('catalogView')" class="hover:text-white">Bộ Phát Wi-Fi 6 Mesh 3A</a></li>
+                        <li><a href="#" onclick="switchTab('catalogView')" class="hover:text-white">Khóa Cửa Vân Tay Smart Access</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px]">Hệ Thống Chi Nhánh 3A</h4>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-start"><i class="fa-solid fa-location-dot mt-0.5 mr-2 text-brand-500"></i> TP.HCM: 3A Tech Building, 123 Nguyễn Văn Cừ, Q.5</li>
+                        <li class="flex items-start"><i class="fa-solid fa-location-dot mt-0.5 mr-2 text-brand-500"></i> Hà Nội: 3A Tower, 88 Cầu Giấy, Q. Cầu Giấy</li>
+                        <li class="flex items-start"><i class="fa-solid fa-phone mr-2 text-emerald-400"></i> Hotline Bán Hàng: 1900 3A3A</li>
+                        <li class="flex items-start"><i class="fa-solid fa-envelope mr-2 text-brand-400"></i> Email: contact@3a.vn</li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Certification -->
+                <div>
+                    <h4 class="font-bold text-white mb-3 uppercase tracking-wider text-[11px]">Chứng Nhận & Đại Lý</h4>
+                    <p class="mb-3 text-slate-400">Đăng ký trở thành đại lý ủy quyền chính thức của 3A Technology để nhận chiết khấu hấp dẫn.</p>
+                    <button onclick="switchTab('quoteView')" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold transition">Đăng Ký Đại Lý 3A</button>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center text-[11px] text-slate-500">
+                <p>© 2026 3A Technology. Tất cả quyền được bảo lưu.</p>
+                <div class="flex space-x-4 mt-2 sm:mt-0">
+                    <a href="#" class="hover:underline">Chính sách bảo mật</a>
+                    <a href="#" class="hover:underline">Điều khoản dịch vụ</a>
+                    <a href="#" class="hover:underline">Sitemap 3A.VN</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        let isWholesale = false;
+        let cart = [];
+        let quoteItems = [];
+
+        // Sample Product Database for 3A Technology
+        const productsData = [
+            {
+                id: '3A-CAM-4K',
+                name: 'Camera AI 3A Ultra 4K NightVision',
+                category: 'camera',
+                price: 2450000,
+                wholesalePrice: 1850000,
+                rating: 4.9,
+                badge: 'Bán Chạy #1',
+                specs: '8MP 4K, AI Face Rec, Hồng ngoại 50m, PoE, IP67',
+                image: 'https://placehold.co/400x300/0f172a/0284c7?text=3A+Camera+4K+AI'
+            },
+            {
+                id: '3A-NVR-32CH',
+                name: 'Đầu Ghi NVR 3A Smart 32 Kênh AI',
+                category: 'camera',
+                price: 8900000,
+                wholesalePrice: 6800000,
+                rating: 4.8,
+                badge: 'Công Nghệ AI',
+                specs: '32 Kênh 4K, 4 Khay HDD 16TB, Chuẩn H.265+, VMS 3A',
+                image: 'https://placehold.co/400x300/0f172a/0284c7?text=3A+NVR+32CH'
+            },
+            {
+                id: '3A-SW-24POE',
+                name: 'Switch 3A Gigabit 24 Cổng PoE+ 380W',
+                category: 'network',
+                price: 5200000,
+                wholesalePrice: 3950000,
+                rating: 5.0,
+                badge: 'Doanh Nghiệp',
+                specs: '24 Port Gigabit PoE+, 2 Uplink SFP 10G, Chống sét 6KV',
+                image: 'https://placehold.co/400x300/0f172a/0284c7?text=3A+Switch+24+PoE'
+            },
+            {
+                id: '3A-WIFI6-PRO',
+                name: 'Bộ Phát Wi-Fi 6 Enterprise 3A Mesh-AX3000',
+                category: 'network',
+                price: 3100000,
+                wholesalePrice: 2300000,
+                rating: 4.7,
+                badge: 'Tốc Độ Cao',
+                specs: 'Speed 3000Mbps, Chịu tải 250 User, Roaming 0ms, PoE In',
+                image: 'https://placehold.co/400x300/0f172a/0284c7?text=3A+WiFi+6+Mesh'
+            },
+            {
+                id: '3A-ACCESS-FACE',
+                name: 'Máy Chấm Công & Kiểm Soát Vào Ra 3A FacePass',
+                category: 'access',
+                price: 4800000,
+                wholesalePrice: 3600000,
+                rating: 4.9,
+                badge: 'Smart Building',
+                specs: 'Nhận diện khuôn mặt <0.2s, 10,000 User, Chống giả mạo 3D',
+                image: 'https://placehold.co/400x300/0f172a/0284c7?text=3A+FacePass'
+            },
+            {
+                id: '3A-HDD-8TB',
+                name: 'Ổ Cứng Chuyên Dụng Surveillance 3A Sky 8TB',
+                category: 'storage',
+                price: 5600000,
+                wholesalePrice: 4400000,
+                rating: 4.8,
+                badge: 'Ghi 24/7',
+                specs: '8TB 256MB Cache, Chuyên dùng NVR 64 kênh, BH 36T',
+                image: 'https://placehold.co/400x300/0f172a/0284c7?text=3A+HDD+8TB'
+            }
+        ];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-slate-800/80', 'font-semibold');
+                btn.classList.add('text-slate-600', 'dark:text-slate-300');
+            });
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.add('text-brand-600', 'dark:text-brand-400', 'bg-brand-50', 'dark:bg-slate-800/80', 'font-semibold');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (tabId === 'adminView') {
+                setTimeout(initAdminChart, 100);
+            }
+        }
+
+        function formatVND(amount) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.querySelector('input[name="categoryFilter"]:checked').value;
+            const maxPrice = parseInt(document.getElementById('priceRange').value);
+            const sortBy = document.getElementById('sortSelect').value;
+
+            let filtered = productsData.filter(p => {
+                const currentPrice = isWholesale ? p.wholesalePrice : p.price;
+                const matchesQuery = p.name.toLowerCase().includes(query) || p.id.toLowerCase().includes(query) || p.specs.toLowerCase().includes(query);
+                const matchesCat = category === 'all' || p.category === category;
+                const matchesPrice = currentPrice <= maxPrice;
+                return matchesQuery && matchesCat && matchesPrice;
+            });
+
+            if (sortBy === 'price-asc') filtered.sort((a, b) => (isWholesale ? a.wholesalePrice - b.wholesalePrice : a.price - b.price));
+            if (sortBy === 'price-desc') filtered.sort((a, b) => (isWholesale ? b.wholesalePrice - a.wholesalePrice : b.price - a.price));
+            if (sortBy === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+            renderProducts(filtered);
+        }
+
+        function renderProducts(items) {
+            const grid = document.getElementById('productGrid');
+            document.getElementById('productCount').innerText = items.length;
+
+            if (items.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs">Không tìm thấy sản phẩm 3A phù hợp bộ lọc.</div>`;
+                return;
+            }
+
+            grid.innerHTML = items.map(p => {
+                const displayPrice = isWholesale ? p.wholesalePrice : p.price;
+                return `
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div>
+                            <div class="relative">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-44 object-cover" onerror="this.src='https://placehold.co/400x300/0f172a/ffffff?text=3A+Tech'">
+                                <span class="absolute top-3 left-3 bg-brand-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase">${p.badge}</span>
+                                <span class="absolute top-3 right-3 bg-slate-900/80 text-white text-[10px] font-mono px-2 py-0.5 rounded">${p.id}</span>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <h4 class="font-bold text-sm text-slate-900 dark:text-white line-clamp-1">${p.name}</h4>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">${p.specs}</p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-t border-slate-100 dark:border-slate-700/50 space-y-3">
+                            <div class="flex justify-between items-baseline">
+                                <div>
+                                    <span class="text-xs text-slate-400 block">${isWholesale ? 'Giá Đại Lý 3A' : 'Giá Lẻ Niêm Yết'}</span>
+                                    <span class="text-base font-extrabold text-brand-600 dark:text-brand-400">${formatVND(displayPrice)}</span>
+                                </div>
+                                ${isWholesale ? `<span class="text-[10px] bg-amber-500/10 text-amber-500 font-bold px-1.5 py-0.5 rounded border border-amber-500/20">Giá B2B</span>` : ''}
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="addToCart('${p.id}')" class="py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white text-xs font-semibold rounded-xl transition">
+                                    <i class="fa-solid fa-cart-plus mr-1"></i> Thêm Giỏ
+                                </button>
+                                <button onclick="addToQuoteDirect('${p.id}')" class="py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-xl transition">
+                                    <i class="fa-solid fa-file-invoice mr-1"></i> Thêm Báo Giá
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updatePriceLabel(val) {
+            document.getElementById('priceLabel').innerText = formatVND(val);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.querySelector('input[name="categoryFilter"][value="all"]').checked = true;
+            document.getElementById('priceRange').value = 50000000;
+            updatePriceLabel(50000000);
+            filterProducts();
+        }
+
+        function toggleWholesaleMode() {
+            isWholesale = !isWholesale;
+            const btn = document.getElementById('wholesaleBtn');
+            const text = document.getElementById('wholesaleText');
+
+            if (isWholesale) {
+                btn.classList.add('bg-amber-500', 'text-slate-900');
+                text.innerText = 'Chế độ: Đại Lý B2B 3A';
+            } else {
+                btn.classList.remove('bg-amber-500', 'text-slate-900');
+                text.innerText = 'Chế độ: Khách Bán Lẻ';
+            }
+            filterProducts();
+        }
+
+        function addToCart(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
+            toggleCartDrawer();
+        }
+
+        function updateCartUI() {
+            const badge = document.getElementById('cartBadge');
+            const list = document.getElementById('cartItemsList');
+            const totalEl = document.getElementById('cartTotalPrice');
+
+            const totalItems = cart.reduce((sum, i) => sum + i.qty, 0);
+            badge.innerText = totalItems;
+
+            if (cart.length === 0) {
+                list.innerHTML = `<p class="text-center text-xs text-slate-400 py-8">Giỏ hàng 3A chưa có sản phẩm nào.</p>`;
+                totalEl.innerText = '0 đ';
+                return;
+            }
+
+            let subtotal = 0;
+            list.innerHTML = cart.map(item => {
+                const price = isWholesale ? item.wholesalePrice : item.price;
+                subtotal += price * item.qty;
+                return `
+                    <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-700/50 rounded-xl text-xs">
+                        <div>
+                            <p class="font-bold text-slate-900 dark:text-white line-clamp-1">${item.name}</p>
+                            <p class="text-slate-400">${formatVND(price)} x ${item.qty}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="changeCartQty('${item.id}', -1)" class="w-6 h-6 rounded bg-slate-200 dark:bg-slate-600 font-bold">-</button>
+                            <span class="font-bold">${item.qty}</span>
+                            <button onclick="changeCartQty('${item.id}', 1)" class="w-6 h-6 rounded bg-slate-200 dark:bg-slate-600 font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            totalEl.innerText = formatVND(subtotal);
+        }
+
+        function changeCartQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            updateCartUI();
+        }
+
+        function toggleCartDrawer() {
+            document.getElementById('cartDrawer').classList.toggle('hidden');
+        }
+
+        function addToQuoteDirect(productId) {
+            const product = productsData.find(p => p.id === productId);
+            if (!product) return;
+
+            const price = isWholesale ? product.wholesalePrice : product.price;
+            quoteItems.push({
+                name: product.name,
+                unit: 'Bộ',
+                qty: 1,
+                price: price
+            });
+            renderQuoteTable();
+            switchTab('quoteView');
+        }
+
+        function transferCartToQuote() {
+            cart.forEach(item => {
+                const price = isWholesale ? item.wholesalePrice : item.price;
+                quoteItems.push({
+                    name: item.name,
+                    unit: 'Bộ',
+                    qty: item.qty,
+                    price: price
+                });
+            });
+            renderQuoteTable();
+        }
+
+        function addQuoteSampleItem() {
+            quoteItems.push({
+                name: 'Gói Dịch Vụ Thi Công & Lắp Đặt Tận Nơi 3A',
+                unit: 'Gói',
+                qty: 1,
+                price: 1500000
+            });
+            renderQuoteTable();
+        }
+
+        function removeQuoteItem(index) {
+            quoteItems.splice(index, 1);
+            renderQuoteTable();
+        }
+
+        function renderQuoteTable() {
+            const tbody = document.getElementById('quoteTableBody');
+            if (quoteItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-4 text-slate-400">Chưa có thiết bị nào trong danh sách báo giá 3A.</td></tr>`;
+                document.getElementById('quoteSubtotal').innerText = '0 đ';
+                document.getElementById('quoteTax').innerText = '0 đ';
+                document.getElementById('quoteGrandTotal').innerText = '0 đ';
+                return;
+            }
+
+            let subtotal = 0;
+            tbody.innerHTML = quoteItems.map((item, idx) => {
+                const itemTotal = item.price * item.qty;
+                subtotal += itemTotal;
+                return `
+                    <tr class="border-b border-slate-200">
+                        <td class="p-2 border border-slate-300 text-center font-bold">${idx + 1}</td>
+                        <td class="p-2 border border-slate-300 font-semibold">${item.name}</td>
+                        <td class="p-2 border border-slate-300 text-center">${item.unit}</td>
+                        <td class="p-2 border border-slate-300 text-center font-bold">${item.qty}</td>
+                        <td class="p-2 border border-slate-300 text-right">${formatVND(item.price)}</td>
+                        <td class="p-2 border border-slate-300 text-right font-bold text-slate-900">${formatVND(itemTotal)}</td>
+                        <td class="p-2 border border-slate-300 text-center no-print">
+                            <button onclick="removeQuoteItem(${idx})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const tax = subtotal * 0.10;
+            const grand = subtotal + tax;
+
+            document.getElementById('quoteSubtotal').innerText = formatVND(subtotal);
+            document.getElementById('quoteTax').innerText = formatVND(tax);
+            document.getElementById('quoteGrandTotal').innerText = formatVND(grand);
+        }
+
+        function fillWarrantySample(code) {
+            document.getElementById('warrantyQuery').value = code;
+            searchWarranty();
+        }
+
+        function searchWarranty() {
+            const query = document.getElementById('warrantyQuery').value.trim();
+            const resDiv = document.getElementById('warrantyResult');
+            resDiv.classList.remove('hidden');
+
+            if (!query) {
+                resDiv.innerHTML = `<div class="p-4 bg-red-50 text-red-600 rounded-2xl text-xs font-semibold">Vui lòng nhập số Serial/SĐT để tra cứu!</div>`;
+                return;
+            }
+
+            // Mock database results for 3A
+            resDiv.innerHTML = `
+                <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-md space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-200 dark:border-slate-700 pb-4 gap-2">
+                        <div>
+                            <span class="bg-emerald-500/10 text-emerald-500 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-500/20">✓ Bảo Hành Còn Hiệu Lực</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mt-2">Mã Serial: ${query.toUpperCase()}</h3>
+                        </div>
+                        <span class="text-xs text-slate-400">Trung Tâm Bảo Hành 3A Tech HQ</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                            <span class="text-slate-400 block">Tên Thiết Bị:</span>
+                            <span class="font-bold text-slate-900 dark:text-white">Camera AI 3A Ultra 4K NightVision</span>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                            <span class="text-slate-400 block">Ngày Kích Hoạt:</span>
+                            <span class="font-bold text-slate-900 dark:text-white">15/01/2025</span>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900 p-3 rounded-xl">
+                            <span class="text-slate-400 block">Thời Hạn Hết Hạn:</span>
+                            <span class="font-bold text-emerald-500">15/01/2027 (Còn 10 Tháng)</span>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Service History -->
+                    <div class="space-y-3 pt-2">
+                        <h4 class="font-bold text-xs text-slate-900 dark:text-white uppercase tracking-wider">Lịch Sử Bảo Trì 3A:</h4>
+                        <div class="border-l-2 border-brand-500 pl-4 space-y-3 text-xs">
+                            <div>
+                                <span class="font-bold text-slate-900 dark:text-white">10/02/2026 - Kiểm tra định kỳ</span>
+                                <p class="text-slate-500">Cập nhật firmware 3A OS v4.2.1, vệ sinh ống kính camera. Hoạt động tốt.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openCalcModal() {
+            document.getElementById('calcModal').classList.remove('hidden');
+            calculateHDD();
+        }
+
+        function closeCalcModal() {
+            document.getElementById('calcModal').classList.add('hidden');
+        }
+
+        function calculateHDD() {
+            const camCount = parseInt(document.getElementById('calcCamCount').value) || 1;
+            const resBitrate = parseFloat(document.getElementById('calcRes').value) || 4;
+            const codecFactor = parseFloat(document.getElementById('calcCodec').value) || 0.5;
+            const days = parseInt(document.getElementById('calcDays').value) || 30;
+
+            // HDD Storage Formula in TB = (Cameras * Mbps * 3600 * 24 * Days * Codec) / (8 * 1000 * 1000)
+            const totalBitrateMbps = camCount * resBitrate * codecFactor;
+            const gigabytesPerDay = (totalBitrateMbps * 3600 * 24) / 8000;
+            const totalTB = (gigabytesPerDay * days) / 1000;
+
+            document.getElementById('calcResultTB').innerText = `${totalTB.toFixed(1)} TB`;
+        }
+
+        function toggleAIChat() {
+            document.getElementById('aiChatWindow').classList.toggle('hidden');
+        }
+
+        function sendQuickAIMsg(text) {
+            document.getElementById('aiInput').value = text;
+            sendAIMessage();
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const msgContainer = document.getElementById('aiMessages');
+
+            // Add User message
+            msgContainer.innerHTML += `
+                <div class="ml-auto bg-brand-600 text-white p-3 rounded-2xl max-w-[85%] text-xs shadow-sm">
+                    ${text}
+                </div>
+            `;
+            input.value = '';
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+
+            // Generate AI Response
+            setTimeout(() => {
+                let aiReply = "Dạ, Công ty Công Nghệ 3A có thể tư vấn trực tiếp qua hotline 1900 3A3A hoặc gửi báo giá PDF cho quý khách ạ!";
+                const lower = text.toLowerCase();
+
+                if (lower.includes('camera')) {
+                    aiReply = "3A cung cấp dòng Camera AI Ultra 4K tích hợp nhận diện khuôn mặt và hồng ngoại ban đêm 50m. Bạn có thể xem thêm trong tab Sản Phẩm!";
+                } else if (lower.includes('ổ cứng') || lower.includes('dung lượng')) {
+                    aiReply = "Bạn có thể sử dụng công cụ 'Tính Dung Lượng HDD' ở góc trên màn hình để tính chính xác Terabyte ổ cứng 3A cần mua ạ!";
+                } else if (lower.includes('đại lý') || lower.includes('b2b')) {
+                    aiReply = "3A Technology áp dụng chính sách chiết khấu đại lý lên tới 35% cho đơn hàng dự án B2B. Hãy nhấp 'Tạo Báo Giá Đại Lý 3A' để trải nghiệm!";
+                }
+
+                msgContainer.innerHTML += `
+                    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl max-w-[85%] text-slate-700 dark:text-slate-200 shadow-sm space-y-1">
+                        <p class="font-bold text-brand-600 text-[11px]">Trợ Lý AI 3A:</p>
+                        <p>${aiReply}</p>
+                    </div>
+                `;
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }, 600);
+        }
+
+        function openSolutionQuote(solutionName) {
+            quoteItems.push({
+                name: `Gói Giải Pháp B2B: ${solutionName}`,
+                unit: 'Hệ thống',
+                qty: 1,
+                price: 25000000
+            });
+            renderQuoteTable();
+            switchTab('quoteView');
+        }
+
+        let salesChartInstance = null;
+        function initAdminChart() {
+            const ctx = document.getElementById('adminSalesChart');
+            if (!ctx) return;
+
+            if (salesChartInstance) salesChartInstance.destroy();
+
+            salesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9'],
+                    datasets: [{
+                        label: 'Doanh thu 3A (Triệu VNĐ)',
+                        data: [950, 1100, 1250, 1400, 1350, 1600, 1720, 1820, 1950],
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.classList.add('dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        window.onload = function() {
+            // Default sample quote items
+            quoteItems = [
+                { name: 'Camera AI 3A Ultra 4K NightVision', unit: 'Bộ', qty: 4, price: 2450000 },
+                { name: 'Đầu Ghi NVR 3A Smart 32 Kênh AI', unit: 'Bộ', qty: 1, price: 8900000 },
+                { name: 'Switch 3A Gigabit 24 Cổng PoE+ 380W', unit: 'Bộ', qty: 1, price: 5200000 }
+            ];
+
+            filterProducts();
+            renderQuoteTable();
+
+            // Set current date string
+            const today = new Date();
+            document.getElementById('quoteDateStr').innerText = today.toLocaleDateString('vi-VN');
+        };
+    </script>
+</body>
+</html>
