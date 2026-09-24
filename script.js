@@ -1,11 +1,12 @@
 /* ==========================================================================
    3A TECHNOLOGY & SOLUTIONS - INTERACTIVE APPLICATION SCRIPT
+   (Yêu cầu nạp data.js trước file này)
    ========================================================================== */
 
 // --- GLOBAL APPLICATION STATE ---
 const appState = {
     customerMode: 'b2c', // 'b2c' or 'b2b'
-    cart: [],
+    cart: loadCart(),
     estimator: {
         area: 120,
         camCount: 4,
@@ -23,94 +24,15 @@ const appState = {
     }
 };
 
-// --- PRODUCT DATABASE (API Mock) ---
-const productsData = [
-    {
-        id: '3A-CAM-01',
-        name: 'Camera IP Hikvision 4K UltraHD AI',
-        category: 'camera',
-        brand: 'Hikvision',
-        priceB2C: 2450000,
-        priceB2B: 1950000,
-        resolution: '8MP',
-        specs: ['PoE', 'Gigabit'],
-        image: 'https://images.unsplash.com/photo-1557862921-37829c790f19?w=300&auto=format&fit=crop&q=80',
-        badge: 'BÁN CHẠY',
-        datasheet: 'Hikvision DS-2CD2183G0-I: 8MP, Hồng ngoại 30m, Chuẩn IP67 chống nước, Nguồn PoE 802.3af.'
-    },
-    {
-        id: '3A-CAM-02',
-        name: 'Camera IP Dahua Full-Color 4MP',
-        category: 'camera',
-        brand: 'Dahua',
-        priceB2C: 1350000,
-        priceB2B: 1050000,
-        resolution: '4MP',
-        specs: ['PoE'],
-        image: 'https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=300&auto=format&fit=crop&q=80',
-        badge: 'CÓ MÀU ĐÊM',
-        datasheet: 'Dahua IPC-HFW2431T-AS-S2: 4MP, Đèn LED trợ sáng 40m, Tích hợp Micro thu âm.'
-    },
-    {
-        id: '3A-NET-01',
-        name: 'Bộ Phát Wi-Fi 6 Ruijie Reyee RG-RAP2260(G)',
-        category: 'network',
-        brand: 'Ruijie',
-        priceB2C: 3200000,
-        priceB2B: 2650000,
-        resolution: 'N/A',
-        specs: ['WiFi6', 'Gigabit', 'PoE'],
-        image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&auto=format&fit=crop&q=80',
-        badge: 'WI-FI 6 DỰ ÁN',
-        datasheet: 'Ruijie RG-RAP2260(G): Băng thông 1775Mbps, Chịu tải 100 Users, Roaming mượt mà.'
-    },
-    {
-        id: '3A-NET-02',
-        name: 'Switch PoE Omada TP-Link 16 Cổng Gigabit',
-        category: 'network',
-        brand: 'TP-Link',
-        priceB2C: 4100000,
-        priceB2B: 3400000,
-        resolution: 'N/A',
-        specs: ['PoE', 'Gigabit'],
-        image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&auto=format&fit=crop&q=80',
-        badge: 'QUẢN LÝ CLOUD',
-        datasheet: 'TP-Link TL-SG1016PE: 16 Cổng PoE+ tổng công suất 150W, Chuẩn rack 19-inch.'
-    },
-    {
-        id: '3A-SMT-01',
-        name: 'Khóa Vân Tay Thông Minh 3A FaceID Pro',
-        category: 'smarthome',
-        brand: '3A-Smart',
-        priceB2C: 5800000,
-        priceB2B: 4500000,
-        resolution: 'N/A',
-        specs: ['WiFi6'],
-        image: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=300&auto=format&fit=crop&q=80',
-        badge: 'NHẬN DIỆN KHUÔN MẶT',
-        datasheet: '3A Lock Pro: Mở bằng FaceID 3D, Vân tay FPO, Thẻ từ, Mã số & App Điện thoại.'
-    },
-    {
-        id: '3A-PBX-01',
-        name: 'Tổng Đài IP Yeastar S20 Cho 20 Máy Nhánh',
-        category: 'pbx',
-        brand: '3A-Smart',
-        priceB2C: 6900000,
-        priceB2B: 5800000,
-        resolution: 'N/A',
-        specs: ['Gigabit'],
-        image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=300&auto=format&fit=crop&q=80',
-        badge: 'TỔNG ĐÀI B2B',
-        datasheet: 'Yeastar S20: Hỗ trợ 20 Users, 10 Cuộc gọi đồng thời, Ghi âm cuộc gọi, IVR lời chào.'
-    }
-];
-
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     renderFeaturedProducts();
     renderProductsGrid();
     calculateEstimate();
     updateCartCount();
+
+    const hashPage = window.location.hash.replace('#', '');
+    if (hashPage && document.getElementById(hashPage)) navigateTo(hashPage);
 });
 
 // --- NAVIGATION & PAGE SWITCHING ---
@@ -364,33 +286,7 @@ function requestSurveyCall() {
 }
 
 // --- WARRANTY LOOKUP SYSTEM ---
-const mockWarrantyDb = {
-    '3A-889911': {
-        serial: '3A-889911',
-        productName: 'Camera IP Hikvision 4K UltraHD AI',
-        customer: 'Công ty TNHH Phần Mềm Á Châu',
-        purchaseDate: '15/01/2025',
-        expiryDate: '15/01/2028',
-        status: 'HOẠT ĐỘNG BÌNH THƯỜNG',
-        history: [
-            { date: '15/01/2025', note: 'Kích hoạt bảo hành điện tử chính hãng 3A' }
-        ]
-    },
-    '3A-CAM-99': {
-        serial: '3A-CAM-99',
-        productName: 'Camera IP Dahua Full-Color 4MP',
-        customer: 'Anh Nguyễn Văn Hùng (Khách B2C)',
-        purchaseDate: '10/06/2025',
-        expiryDate: '10/06/2027',
-        status: 'ĐANG XỬ LÝ SỬA CHỮA',
-        history: [
-            { date: '10/06/2025', note: 'Kích hoạt bảo hành' },
-            { date: '02/03/2026', note: 'Tiếp nhận thiết bị lỗi nguồn từ khách hàng' },
-            { date: '03/03/2026', note: 'Kỹ thuật viên 3A đã thay thế IC nguồn chính hãng, đang chạy test stress 24h' }
-        ]
-    }
-};
-
+// (dữ liệu mockWarrantyDb nằm trong data.js)
 function setWarrantySearch(val) {
     document.getElementById('warranty-input').value = val;
     searchWarranty();
@@ -463,6 +359,7 @@ function addToCart(productId) {
 }
 
 function updateCartCount() {
+    saveCart(appState.cart);
     const count = appState.cart.reduce((sum, item) => sum + item.quantity, 0);
     document.getElementById('cart-count-badge').innerText = count;
     document.getElementById('quote-count-badge').innerText = count;
@@ -603,52 +500,6 @@ function openDatasheetModal(productId) {
 
 function closeDatasheetModal() {
     document.getElementById('datasheet-modal').classList.remove('active');
-}
-
-// --- ADMIN REST API TESTER ENGINE ---
-function executeApiCall() {
-    const method = document.getElementById('api-method').value;
-    const endpoint = document.getElementById('api-endpoint').value;
-    const jsonOutput = document.getElementById('api-json-output');
-
-    let responsePayload = {};
-
-    if (endpoint.includes('/products')) {
-        if (endpoint.includes('3A-CAM-01')) {
-            responsePayload = {
-                status: 200,
-                success: true,
-                data: productsData[0]
-            };
-        } else {
-            responsePayload = {
-                status: 200,
-                success: true,
-                total_items: productsData.length,
-                data: productsData
-            };
-        }
-    } else if (endpoint.includes('/warranty')) {
-        responsePayload = {
-            status: 200,
-            success: true,
-            query: '3A-889911',
-            warranty: mockWarrantyDb['3A-889911']
-        };
-    } else if (endpoint.includes('/quotes')) {
-        responsePayload = {
-            status: 201,
-            success: true,
-            message: 'B2B Quotation PDF Payload generated successfully',
-            quote_id: 'QUOTE-3A-' + Math.floor(100000 + Math.random() * 900000),
-            created_at: new Date().toISOString(),
-            items: appState.cart
-        };
-    }
-
-    jsonOutput.innerHTML = `<code>${JSON.stringify(responsePayload, null, 4)}</code>`;
-    document.getElementById('api-status').innerText = '200 OK';
-    document.getElementById('api-time').innerText = Math.floor(Math.random() * 20 + 10) + ' ms';
 }
 
 // --- AI CHATBOT ENGINE ---

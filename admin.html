@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Trị & REST API - 3A Technology & Solutions</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS (dùng chung với trang chủ) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="container topbar-content">
+            <div class="topbar-left">
+                <span><i class="fa-solid fa-phone"></i> Hotline: <strong>1900 3A3A (1900 3232)</strong></span>
+                <span><i class="fa-solid fa-envelope"></i> Email: <strong>info@3atech.vn</strong></span>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-link" onclick="window.location.href='index.html'"><i class="fa-solid fa-store"></i> Về trang bán hàng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="main-header">
+        <div class="container header-wrapper">
+            <div class="logo-area" onclick="window.location.href='index.html'">
+                <div class="logo-icon">3A</div>
+                <div class="logo-text">
+                    <span class="brand-name">3A TECH</span>
+                    <span class="brand-tagline">Technology & Solutions</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION MENU -->
+    <nav class="main-nav">
+        <div class="container nav-wrapper">
+            <ul class="nav-menu">
+                <li class="nav-item" onclick="window.location.href='index.html'"><i class="fa-solid fa-house"></i> Trang Chủ</li>
+                <li class="nav-item" onclick="window.location.href='index.html#page-products'"><i class="fa-solid fa-boxes-stacked"></i> Sản Phẩm & Bộ Lọc</li>
+                <li class="nav-item" onclick="window.location.href='index.html#page-solutions'"><i class="fa-solid fa-diagram-project"></i> Giải Pháp & Dự Toán B2B</li>
+                <li class="nav-item" onclick="window.location.href='index.html#page-warranty'"><i class="fa-solid fa-screwdriver-wrench"></i> Tra Cứu Bảo Hành</li>
+                <li class="nav-item" onclick="window.location.href='index.html#page-news'"><i class="fa-solid fa-newspaper"></i> Tin Tức & Kỹ Thuật</li>
+                <li class="nav-item active"><i class="fa-solid fa-code"></i> Quản Trị & REST API</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content container">
+
+        <!-- 6. PAGE: ADMIN & REST API TOOL -->
+        <section id="page-admin" class="page-section active">
+            <div class="section-title">
+                <h2>Trang Quản Trị Hệ Thống & REST API Controller</h2>
+                <p>Khu vực dành cho nhân viên 3A: Quản lý mặt hàng, tra cứu báo lỗi & tích hợp API hệ thống</p>
+            </div>
+
+            <!-- ADMIN STATS -->
+            <div class="grid grid-4" style="margin-bottom: 25px;">
+                <div class="admin-stat-card">
+                    <div class="stat-number" id="stat-total-items">8</div>
+                    <div class="stat-label">Tổng mặt hàng trong kho</div>
+                </div>
+                <div class="admin-stat-card warning">
+                    <div class="stat-number">1</div>
+                    <div class="stat-label">Cảnh báo tồn kho thấp</div>
+                </div>
+                <div class="admin-stat-card success">
+                    <div class="stat-number">14</div>
+                    <div class="stat-label">Yêu cầu Báo giá B2B hôm nay</div>
+                </div>
+                <div class="admin-stat-card info">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Sản phẩm đang bảo trì</div>
+                </div>
+            </div>
+
+            <!-- REST API TESTER -->
+            <div class="api-tester-card">
+                <h3><i class="fa-solid fa-network-wired"></i> REST API Interactive Explorer (Mặt hàng & Hệ thống)</h3>
+                <p>Công cụ gọi và kiểm tra endpoint API quản lý mặt hàng thời gian thực cho tích hợp phần mềm kế toán/ERP.</p>
+
+                <div class="api-controls">
+                    <select id="api-method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                    <select id="api-endpoint">
+                        <option value="/api/v1/products">/api/v1/products (Lấy danh sách mặt hàng)</option>
+                        <option value="/api/v1/products/3A-CAM-01">/api/v1/products/3A-CAM-01 (Chi tiết Camera Hikvision)</option>
+                        <option value="/api/v1/warranty/3A-889911">/api/v1/warranty/3A-889911 (Kiểm tra IMEI bảo hành)</option>
+                        <option value="/api/v1/quotes">/api/v1/quotes (Xuất báo giá B2B JSON)</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="executeApiCall()"><i class="fa-solid fa-play"></i> Gửi Request API</button>
+                </div>
+
+                <div class="api-response-wrapper">
+                    <div class="api-header-info">
+                        <span>Status: <strong id="api-status" class="badge-accent">200 OK</strong></span>
+                        <span>Response Time: <strong id="api-time">18 ms</strong></span>
+                        <span>Format: JSON</span>
+                    </div>
+                    <pre id="api-json-output"><code>// Kết quả phản hồi API từ server 3A sẽ hiển thị tại đây...</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 CÔNG TY TNHH CÔNG NGHỆ & GIẢI PHÁP 3A. Khu vực dành cho nhân viên nội bộ.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript -->
+    <script src="data.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

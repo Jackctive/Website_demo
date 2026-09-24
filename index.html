@@ -27,7 +27,7 @@
                     <button id="mode-b2c-btn" class="mode-btn active" onclick="switchCustomerMode('b2c')"><i class="fa-solid fa-user"></i> B2C Cá nhân</button>
                     <button id="mode-b2b-btn" class="mode-btn" onclick="switchCustomerMode('b2b')"><i class="fa-solid fa-building"></i> B2B Doanh nghiệp</button>
                 </div>
-                <button class="topbar-link" onclick="navigateTo('page-admin')"><i class="fa-solid fa-user-gear"></i> Quản trị / API</button>
+                <button class="topbar-link" onclick="window.location.href='admin.html'"><i class="fa-solid fa-user-gear"></i> Quản trị / API</button>
             </div>
         </div>
     </div>
@@ -77,7 +77,6 @@
                 <li class="nav-item" data-page="page-solutions" onclick="navigateTo('page-solutions')"><i class="fa-solid fa-diagram-project"></i> Giải Pháp & Dự Toán B2B</li>
                 <li class="nav-item" data-page="page-warranty" onclick="navigateTo('page-warranty')"><i class="fa-solid fa-screwdriver-wrench"></i> Tra Cứu Bảo Hành</li>
                 <li class="nav-item" data-page="page-news" onclick="navigateTo('page-news')"><i class="fa-solid fa-newspaper"></i> Tin Tức & Kỹ Thuật</li>
-                <li class="nav-item" data-page="page-admin" onclick="navigateTo('page-admin')"><i class="fa-solid fa-code"></i> Quản Trị & REST API</li>
             </ul>
             <div class="nav-extra">
                 <span class="b2b-badge" id="current-mode-indicator"><i class="fa-solid fa-check-circle"></i> Đang chọn: B2C Khách Lẻ</span>
@@ -411,65 +410,6 @@
             </div>
         </section>
 
-        <!-- 6. PAGE: ADMIN & REST API TOOL -->
-        <section id="page-admin" class="page-section">
-            <div class="section-title">
-                <h2>Trang Quản Trị Hệ Thống & REST API Controller</h2>
-                <p>Khu vực dành cho nhân viên 3A: Quản lý mặt hàng, tra cứu báo lỗi & tích hợp API hệ thống</p>
-            </div>
-
-            <!-- ADMIN STATS -->
-            <div class="grid grid-4" style="margin-bottom: 25px;">
-                <div class="admin-stat-card">
-                    <div class="stat-number" id="stat-total-items">8</div>
-                    <div class="stat-label">Tổng mặt hàng trong kho</div>
-                </div>
-                <div class="admin-stat-card warning">
-                    <div class="stat-number">1</div>
-                    <div class="stat-label">Cảnh báo tồn kho thấp</div>
-                </div>
-                <div class="admin-stat-card success">
-                    <div class="stat-number">14</div>
-                    <div class="stat-label">Yêu cầu Báo giá B2B hôm nay</div>
-                </div>
-                <div class="admin-stat-card info">
-                    <div class="stat-number">2</div>
-                    <div class="stat-label">Sản phẩm đang bảo trì</div>
-                </div>
-            </div>
-
-            <!-- REST API TESTER -->
-            <div class="api-tester-card">
-                <h3><i class="fa-solid fa-network-wired"></i> REST API Interactive Explorer (Mặt hàng & Hệ thống)</h3>
-                <p>Công cụ gọi và kiểm tra endpoint API quản lý mặt hàng thời gian thực cho tích hợp phần mềm kế toán/ERP.</p>
-
-                <div class="api-controls">
-                    <select id="api-method">
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                        <option value="PUT">PUT</option>
-                        <option value="DELETE">DELETE</option>
-                    </select>
-                    <select id="api-endpoint">
-                        <option value="/api/v1/products">/api/v1/products (Lấy danh sách mặt hàng)</option>
-                        <option value="/api/v1/products/3A-CAM-01">/api/v1/products/3A-CAM-01 (Chi tiết Camera Hikvision)</option>
-                        <option value="/api/v1/warranty/3A-889911">/api/v1/warranty/3A-889911 (Kiểm tra IMEI bảo hành)</option>
-                        <option value="/api/v1/quotes">/api/v1/quotes (Xuất báo giá B2B JSON)</option>
-                    </select>
-                    <button class="btn btn-primary" onclick="executeApiCall()"><i class="fa-solid fa-play"></i> Gửi Request API</button>
-                </div>
-
-                <div class="api-response-wrapper">
-                    <div class="api-header-info">
-                        <span>Status: <strong id="api-status" class="badge-accent">200 OK</strong></span>
-                        <span>Response Time: <strong id="api-time">18 ms</strong></span>
-                        <span>Format: JSON</span>
-                    </div>
-                    <pre id="api-json-output"><code>// Kết quả phản hồi API từ server 3A sẽ hiển thị tại đây...</code></pre>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <!-- FOOTER -->
@@ -500,7 +440,7 @@
                 <ul>
                     <li><a href="#" onclick="navigateTo('page-warranty'); return false;">Tra cứu bảo hành thiết bị</a></li>
                     <li><a href="#" onclick="openQuoteModal(); return false;">Yêu cầu báo giá VAT B2B</a></li>
-                    <li><a href="#" onclick="navigateTo('page-admin'); return false;">Cổng API cho đối tác</a></li>
+                    <li><a href="admin.html">Cổng API cho đối tác</a></li>
                     <li><a href="#">Quy trình bảo trì tận nơi</a></li>
                 </ul>
             </div>
@@ -642,6 +582,7 @@
     </div>
 
     <!-- Custom JavaScript -->
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
